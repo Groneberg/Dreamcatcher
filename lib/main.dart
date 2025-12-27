@@ -1,5 +1,6 @@
 import 'package:dreamcatcher/src/data/model/dream.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
+import 'package:dreamcatcher/src/features/add_dream/add_dream_screen.dart';
 import 'package:dreamcatcher/src/features/add_dream/widgets/dream_form.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
@@ -34,12 +35,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF0A0E21),
         useMaterial3: true,
       ),
-      home: const Scaffold(
-        body: Center(child: 
-          DreamForm(onSave: onSave)
-        ),
-      ),
+      home: AddDreamScreen(dbService: dbService)
     );
   }
 }
-
