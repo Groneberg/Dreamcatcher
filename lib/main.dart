@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const Scaffold(
         body: Center(child: 
-          Text('Willkommen im Traumtagebuch')
+          DreamForm(onSave: onSave)
         ),
       ),
     );

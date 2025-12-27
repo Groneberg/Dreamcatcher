@@ -1,37 +1,147 @@
-import 'package:dreamcatcher/main.dart';
 import 'package:flutter/material.dart';
 
 class DreamForm extends StatefulWidget {
-  const DreamForm({super.key});
+  final Function(
+    String title,
+    String content,
+    DateTime date,
+    int clarity,
+    List<String> tags,
+  )
+  onSave;
+
+  const DreamForm({super.key, required this.onSave});
 
   @override
   State<DreamForm> createState() => _DreamFormState();
 }
 
 class _DreamFormState extends State<DreamForm> {
-
   final _formKey = GlobalKey<FormState>();
+
+  final _titleController = TextEditingController();
+  final _contentController = TextEditingController();
+  final _tagsController = TextEditingController();
+
+  DateTime _selectedDate = DateTime.now();
+  // TODO clarity score should be int from 1 to 5
+  double _clarityScore = 3.0;
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _contentController.dispose();
+    _tagsController.dispose();
+    super.dispose();
+  }
+
+  Future<void> pickDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() => _selectedDate = picked);
+    }
+  }
+
+  void submit() {
+    if (_formKey.currentState!.validate()) {
+      // TODO Tags are split by comma and trimmed and stored as List<String>
+      final tagsList = _tagsController.text
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+
+      widget.onSave(
+        _titleController.text,
+        _contentController.text,
+        _selectedDate,
+        _clarityScore.round(),
+        tagsList,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child:  
-      Column(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: 16,
         children: [
-          TextField(
-            decoration: InputDecoration(labelText: 'Dream Titel'),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(
+              "Datum: ${_selectedDate.day}.${_selectedDate.month}.${_selectedDate.year}",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            trailing: Icon(Icons.calendar_today),
+            onTap: pickDate,
           ),
-          TextFormField(),
-          TextField(
-            decoration: InputDecoration(labelText: 'Dream Content'),
+
+          TextFormField(
+            controller: _titleController,
+            decoration: const InputDecoration(
+              labelText: 'Title of the Dream',
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(Icons.title),
+            ),
+            textInputAction: TextInputAction.next,
+          ),
+
+          TextFormField(
+            controller: _contentController,
+            decoration: const InputDecoration(
+              labelText: 'What happend?',
+              border: OutlineInputBorder(),
+              alignLabelWithHint: true,
+            ),
             maxLines: 5,
+            keyboardType: TextInputType.multiline,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please describe your dream.';
+              }
+              return null;
+            },
           ),
-          TextFormField(),
+
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Clarity: ${_clarityScore.round()} / 5"),
+              Slider(
+                value: _clarityScore,
+                min: 1,
+                max: 5,
+                divisions: 4,
+                label: _clarityScore.round().toString(),
+                onChanged: (val) => setState(() => _clarityScore = val),
+              ),
+            ],
+          ),
+
+          TextFormField(
+            controller: _tagsController,
+            decoration: const InputDecoration(
+              labelText: 'Tags (separate with commas)',
+              hintText: 'e.g., flying, water, nightmare',
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(Icons.tag),
+            ),
+          ),
+
           ElevatedButton(
-            onPressed: null,
-            child: Text('Save'),
+            onPressed: submit,
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+            child: const Text('Save Dream', style: TextStyle(fontSize: 16)),
           ),
         ],
       ),
