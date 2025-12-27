@@ -2,6 +2,7 @@ import 'package:dreamcatcher/src/data/model/dream.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/features/add_dream/add_dream_screen.dart';
 import 'package:dreamcatcher/src/features/add_dream/widgets/dream_form.dart';
+import 'package:dreamcatcher/src/features/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Traumtagebuch',
+      title: 'Dreamdiary DreamCatcher',
       debugShowCheckedModeBanner: false,
 
       theme: ThemeData(
@@ -35,7 +36,8 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF0A0E21),
         useMaterial3: true,
       ),
-      home: AddDreamScreen(dbService: dbService)
+      home: HomeScreen(dbService: dbService)
+      // AddDreamScreen(dbService: dbService)
     );
   }
 }
