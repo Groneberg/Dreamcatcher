@@ -1,5 +1,6 @@
 import 'package:dreamcatcher/src/data/model/dream.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
+import 'package:dreamcatcher/src/features/add_dream/widgets/dream_form.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -34,8 +35,11 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const Scaffold(
-        body: Center(child: Text('Willkommen im Traumtagebuch')),
+        body: Center(child: 
+          Text('Willkommen im Traumtagebuch')
+        ),
       ),
     );
   }
 }
+
