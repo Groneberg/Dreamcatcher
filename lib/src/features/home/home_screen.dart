@@ -3,6 +3,7 @@ import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/features/add_dream/add_dream_screen.dart';
 import 'package:dreamcatcher/src/features/dream_details/dream_detail_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
 
 class HomeScreen extends StatelessWidget {
 final DatabaseService dbService;
@@ -38,34 +39,63 @@ final DatabaseService dbService;
             itemCount: dreams.length,
             itemBuilder: (context, index) {
               final dream = dreams[index];
-              return Card(
-                margin: const EdgeInsets.only(bottom: 12),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                    child: Text(
-                      dream.clarityScore.toString(),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
+              return Dismissible(
+                key: Key(dream.id.toString()),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 20.0),
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade900,
+                    borderRadius: BorderRadius.circular(12)
                   ),
-                  title: Text(dream.title ?? 'Unkown Dream'),
-                  subtitle: Text(
-                    dream.content,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  trailing: Text(
-                    _formattedDate(dream.date),
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DreamDetailScreen(dream: dream, dbService: dbService),
+                  child: const Icon(Icons.delete, color: Colors.white),
+                ),
+                onDismissed: (direction) {
+                  dbService.deleteDream(dream.id);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('${dream.title ?? "Traum"} gelöscht'),
+                      action: SnackBarAction(
+                        label: 'RÜCKGÄNGIG',
+                        onPressed: () {
+                          final restoreDream = dream.copyWith(id: Isar.autoIncrement);
+                          dbService.saveDream(restoreDream);
+                        },
                       ),
-                    );
-                  },
+                    ),
+                  );
+                },
+                child: Card(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                      child: Text(
+                        dream.clarityScore.toString(),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    title: Text(dream.title ?? 'Unkown Dream'),
+                    subtitle: Text(
+                      dream.content,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    trailing: Text(
+                      _formattedDate(dream.date),
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DreamDetailScreen(dream: dream, dbService: dbService),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               );
             },
