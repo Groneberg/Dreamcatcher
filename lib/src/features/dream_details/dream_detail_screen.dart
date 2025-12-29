@@ -1,4 +1,5 @@
 import 'package:dreamcatcher/src/data/services/database_service.dart';
+import 'package:dreamcatcher/src/features/add_dream/add_dream_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:dreamcatcher/src/data/model/dream.dart';
 
@@ -62,8 +63,22 @@ class DreamDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(dream.title ?? 'Unbenannter Traum'),
+        title: Text(dream.title ?? 'Onknown Dream'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddDreamScreen(
+                    dbService: dbService,
+                    dreamToEdit: dream,
+                  ),
+                ),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.delete_outline),
             onPressed: () => deleteDream(context),

@@ -1,6 +1,8 @@
+import 'package:dreamcatcher/src/data/model/dream.dart';
 import 'package:flutter/material.dart';
 
 class DreamForm extends StatefulWidget {
+  final Dream? initialDream;
   final Function(
     String title,
     String content,
@@ -10,7 +12,7 @@ class DreamForm extends StatefulWidget {
   )
   onSave;
 
-  const DreamForm({super.key, required this.onSave});
+  const DreamForm({super.key, required this.onSave, this.initialDream});
 
   @override
   State<DreamForm> createState() => _DreamFormState();
@@ -19,13 +21,28 @@ class DreamForm extends StatefulWidget {
 class _DreamFormState extends State<DreamForm> {
   final _formKey = GlobalKey<FormState>();
 
-  final _titleController = TextEditingController();
-  final _contentController = TextEditingController();
-  final _tagsController = TextEditingController();
+  late TextEditingController _titleController;
+  late TextEditingController _contentController;
+  late TextEditingController _tagsController;
 
-  DateTime _selectedDate = DateTime.now();
-  // TODO clarity score should be int from 1 to 5
-  double _clarityScore = 3.0;
+  late DateTime _selectedDate;
+  late double _clarityScore;
+
+@override
+  void initState() {
+    super.initState();
+    
+    final dream = widget.initialDream;
+
+    _titleController = TextEditingController(text: dream?.title ?? '');
+    _contentController = TextEditingController(text: dream?.content ?? '');
+    
+    final tagsString = dream?.tags.join(', ') ?? '';
+    _tagsController = TextEditingController(text: tagsString);
+
+    _selectedDate = dream?.date ?? DateTime.now();
+    _clarityScore = dream?.clarityScore.toDouble() ?? 3.0;
+  }
 
   @override
   void dispose() {
@@ -77,7 +94,7 @@ class _DreamFormState extends State<DreamForm> {
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(
-              "Datum: ${_selectedDate.day}.${_selectedDate.month}.${_selectedDate.year}",
+              "Date: ${_selectedDate.day}.${_selectedDate.month}.${_selectedDate.year}",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             trailing: Icon(Icons.calendar_today),
