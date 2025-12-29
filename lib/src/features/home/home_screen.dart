@@ -62,7 +62,7 @@ final DatabaseService dbService;
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => DreamDetailScreen(dream: dream),
+                        builder: (context) => DreamDetailScreen(dream: dream, dbService: dbService),
                       ),
                     );
                   },
