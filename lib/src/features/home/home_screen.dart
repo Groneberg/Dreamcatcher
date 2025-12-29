@@ -1,6 +1,7 @@
 import 'package:dreamcatcher/src/data/model/dream.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/features/add_dream/add_dream_screen.dart';
+import 'package:dreamcatcher/src/features/dream_details/dream_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -58,7 +59,12 @@ final DatabaseService dbService;
                     style: const TextStyle(fontSize: 12),
                   ),
                   onTap: () {
-                    // TODO later detail view
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DreamDetailScreen(dream: dream),
+                      ),
+                    );
                   },
                 ),
               );

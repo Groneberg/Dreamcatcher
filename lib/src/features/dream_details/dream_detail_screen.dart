@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/model/dream.dart';
+import 'package:dreamcatcher/src/data/model/dream.dart';
 
 class DreamDetailScreen extends StatelessWidget {
   final Dream dream;
