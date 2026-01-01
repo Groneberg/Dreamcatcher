@@ -1,5 +1,6 @@
 import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/features/add_dream/add_dream_screen.dart';
+import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:dreamcatcher/src/data/model/dream.dart';
 
@@ -52,7 +53,7 @@ class DreamDetailScreen extends StatelessWidget {
       children: List.generate(5, (index) {
         return Icon(
           index < score ? Icons.star : Icons.star_border,
-          color: Colors.amber,
+          color: AppTheme.burnishedGold,
           size: 20,
         );
       }),

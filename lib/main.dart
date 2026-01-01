@@ -6,6 +6,7 @@ import 'package:dreamcatcher/src/features/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'src/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,15 +28,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Dreamdiary DreamCatcher',
+      title: 'DreamCatcher',
       debugShowCheckedModeBanner: false,
 
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.deepPurple,
-        scaffoldBackgroundColor: const Color(0xFF0A0E21),
-        useMaterial3: true,
-      ),
+
+      theme: AppTheme.darkTheme,
       home: HomeScreen(dbService: dbService)
       // AddDreamScreen(dbService: dbService)
     );
