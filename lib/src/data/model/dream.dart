@@ -1,26 +1,21 @@
-import 'package:isar/isar.dart';
+import 'package:objectbox/objectbox.dart';
 
-part 'dream.g.dart'; 
-
-@collection
+@Entity()
 class Dream {
-  Id id; 
+  @Id()
+  int id; 
 
   String? title;
-  
-  @Index(type: IndexType.value)
   String content;
-
-  @Index()
+  
+  @Property(type: PropertyType.date)
   DateTime date;
   
   int clarityScore; 
-  
-  @Index(type: IndexType.value)
   List<String> tags; 
-  
+
   Dream({
-    this.id = Isar.autoIncrement, 
+    this.id = 0, 
     this.title,
     required this.content,
     required this.date,
@@ -29,7 +24,7 @@ class Dream {
   });
 
   Dream copyWith({
-    Id? id,
+    int? id,
     String? title,
     String? content,
     DateTime? date,
@@ -37,7 +32,7 @@ class Dream {
     List<String>? tags,
   }) {
     return Dream(
-      id: id ?? this.id, 
+      id: id ?? this.id,
       title: title ?? this.title,
       content: content ?? this.content,
       date: date ?? this.date,

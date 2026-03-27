@@ -3,10 +3,9 @@ import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/features/add_dream/add_dream_screen.dart';
 import 'package:dreamcatcher/src/features/dream_details/dream_detail_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:isar/isar.dart';
 
 class HomeScreen extends StatelessWidget {
-final DatabaseService dbService;
+  final DatabaseService dbService;
 
   const HomeScreen({super.key, required this.dbService});
 
@@ -17,22 +16,29 @@ final DatabaseService dbService;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('DreamCatcher'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('DreamCatcher'), centerTitle: true),
       body: StreamBuilder<List<Dream>>(
         stream: dbService.listenToDreams(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                "Fehler: ${snapshot.error}",
+                style: const TextStyle(color: Colors.red),
+              ),
+            );
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting &&
+              !snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final dreams = snapshot.data ?? [];
-
-          if (dreams.isEmpty) {
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return _buildEmptyState();
           }
+
+          final dreams = snapshot.data!;
 
           return ListView.builder(
             padding: const EdgeInsets.all(8),
@@ -48,7 +54,7 @@ final DatabaseService dbService;
                   margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(
                     color: Colors.red.shade900,
-                    borderRadius: BorderRadius.circular(12)
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(Icons.delete, color: Colors.white),
                 ),
@@ -60,7 +66,7 @@ final DatabaseService dbService;
                       action: SnackBarAction(
                         label: 'RÜCKGÄNGIG',
                         onPressed: () {
-                          final restoreDream = dream.copyWith(id: Isar.autoIncrement);
+                          final restoreDream = dream.copyWith(id: 0);
                           dbService.saveDream(restoreDream);
                         },
                       ),
@@ -71,7 +77,9 @@ final DatabaseService dbService;
                   margin: const EdgeInsets.only(bottom: 12),
                   child: ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer,
                       child: Text(
                         dream.clarityScore.toString(),
                         style: const TextStyle(fontWeight: FontWeight.bold),
@@ -91,7 +99,10 @@ final DatabaseService dbService;
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DreamDetailScreen(dream: dream, dbService: dbService),
+                          builder: (context) => DreamDetailScreen(
+                            dream: dream,
+                            dbService: dbService,
+                          ),
                         ),
                       );
                     },

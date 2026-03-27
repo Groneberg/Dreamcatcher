@@ -1,37 +1,71 @@
-import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 import '../model/dream.dart';
+import '../../../objectbox.g.dart';
 
 class DatabaseService {
-  final Isar isar;
+  late final Store store;
+  late final Box<Dream> dreamBox;
 
-  DatabaseService(this.isar);
+  DatabaseService._(this.store) {
+    dreamBox = Box<Dream>(store);
+  }
+
+  static Future<DatabaseService> init() async {
+    final docsDir = await getApplicationDocumentsDirectory();
+    final dbPath = p.join(docsDir.path, "objectbox_dreams");
+    
+    final store = await openStore(directory: dbPath);
+    return DatabaseService._(store);
+  }
 
   Future<void> saveDream(Dream dream) async {
-    await isar.writeTxn(() async {
-      await isar.dreams.put(dream);
+    dreamBox.put(dream);
+  }
+
+  Future<void> deleteDream(int id) async {
+    dreamBox.remove(id);
+  }
+
+  Stream<List<Dream>> listenToDreams() {
+    return watchFilteredDreams('');
+  }
+
+Stream<List<Dream>> watchFilteredDreams(String query) {
+    if (query.isEmpty) {
+      return dreamBox
+          .query()
+          .order(Dream_.date, flags: Order.descending)
+          .watch(triggerImmediately: true) // <-- Hier korrigiert
+          .map((q) {
+            final results = q.find();
+            print("📦 ObjectBox liefert ${results.length} Träume (ohne Filter)");
+            return results;
+          });
+    }
+
+    final queryBuilder = dreamBox.query(
+      Dream_.title.contains(query, caseSensitive: false)
+      .or(Dream_.content.contains(query, caseSensitive: false))
+    )..order(Dream_.date, flags: Order.descending);
+
+    return queryBuilder.watch(triggerImmediately: true).map((q) { // <-- Hier korrigiert
+      final results = q.find();
+      print("📦 ObjectBox liefert ${results.length} Träume (mit Filter)");
+      return results;
     });
   }
 
   Future<List<Dream>> getAllDreams() async {
-    return await isar.dreams.where().sortByDateDesc().findAll();
+    return dreamBox.getAll();
   }
 
-  Future<void> deleteDream(Id id) async {
-    await isar.writeTxn(() async {
-      await isar.dreams.delete(id);
-    });
+  Future<List<String>> getAllUniqueTags() async {
+    final dreams = dreamBox.getAll();
+    return dreams.expand((d) => d.tags).toSet().toList();
   }
 
-  Stream<List<Dream>> listenToDreams() {
-    return isar.dreams.where().sortByDateDesc().watch(fireImmediately: true);
-  }
-
-  Future<List<Dream>> searchDreams(String term) async {
-    return await isar.dreams
-        .filter()
-        .titleContains(term, caseSensitive: false)
-        .or()
-        .contentContains(term, caseSensitive: false)
-        .findAll();
+  void close() {
+    store.close();
   }
 }

@@ -2,7 +2,6 @@ import 'package:dreamcatcher/src/data/model/dream.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/features/add_dream/widgets/dream_form.dart';
 import 'package:flutter/material.dart';
-import 'package:isar/isar.dart';
 
 
 
@@ -31,7 +30,7 @@ const AddDreamScreen({
             initialDream: dreamToEdit,
             onSave: (title, content, date, clarity, tags) async {
 
-              final id = dreamToEdit?.id ?? Isar.autoIncrement;
+              final id = dreamToEdit?.id ?? 0;
               
               final newDream = Dream(
                 id: id,
