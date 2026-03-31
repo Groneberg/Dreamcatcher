@@ -14,7 +14,7 @@ class DatabaseService {
   static Future<DatabaseService> init() async {
     final docsDir = await getApplicationDocumentsDirectory();
     final dbPath = p.join(docsDir.path, "objectbox_dreams");
-    
+
     final store = await openStore(directory: dbPath);
     return DatabaseService._(store);
   }
@@ -31,41 +31,36 @@ class DatabaseService {
     return watchFilteredDreams('');
   }
 
-Stream<List<Dream>> watchFilteredDreams(String query) {
+  Stream<List<Dream>> watchFilteredDreams(String query) {
     if (query.isEmpty) {
       return dreamBox
           .query()
           .order(Dream_.date, flags: Order.descending)
-          .watch(triggerImmediately: true) // <-- Hier korrigiert
-          .map((q) {
-            final results = q.find();
-            print("📦 ObjectBox liefert ${results.length} Träume (ohne Filter)");
-            return results;
-          });
+          .watch(triggerImmediately: true)
+          .map((q) => q.find());
     }
 
     final queryBuilder = dreamBox.query(
-      Dream_.title.contains(query, caseSensitive: false)
-      .or(Dream_.content.contains(query, caseSensitive: false))
+      Dream_.title
+          .contains(query, caseSensitive: false)
+          .or(Dream_.content.contains(query, caseSensitive: false)),
     )..order(Dream_.date, flags: Order.descending);
 
-    return queryBuilder.watch(triggerImmediately: true).map((q) { // <-- Hier korrigiert
-      final results = q.find();
-      print("📦 ObjectBox liefert ${results.length} Träume (mit Filter)");
-      return results;
-    });
+    return queryBuilder.watch(triggerImmediately: true).map((q) => q.find());
   }
 
   Future<List<Dream>> getAllDreams() async {
     return dreamBox.getAll();
   }
 
-  Future<List<String>> getAllUniqueTags() async {
-    final dreams = dreamBox.getAll();
-    return dreams.expand((d) => d.tags).toSet().toList();
+  Stream<Dream?> listenToDreamById(int id) {
+    return dreamBox
+        .query(Dream_.id.equals(id))
+        .watch(triggerImmediately: true)
+        .map((query) => query.findFirst());
   }
 
-  void close() {
+  void dispose() {
     store.close();
   }
 }

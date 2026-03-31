@@ -1,4 +1,6 @@
+import 'package:dreamcatcher/src/common/widget/dream_button.dart';
 import 'package:dreamcatcher/src/data/model/dream.dart';
+import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class DreamForm extends StatefulWidget {
@@ -9,8 +11,7 @@ class DreamForm extends StatefulWidget {
     DateTime date,
     int clarity,
     List<String> tags,
-  )
-  onSave;
+  ) onSave;
 
   const DreamForm({super.key, required this.onSave, this.initialDream});
 
@@ -28,10 +29,9 @@ class _DreamFormState extends State<DreamForm> {
   late DateTime _selectedDate;
   late double _clarityScore;
 
-@override
+  @override
   void initState() {
     super.initState();
-    
     final dream = widget.initialDream;
 
     _titleController = TextEditingController(text: dream?.title ?? '');
@@ -59,15 +59,14 @@ class _DreamFormState extends State<DreamForm> {
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
     );
-    if (picked != null) {
+    if (picked != null && picked != _selectedDate) {
       setState(() => _selectedDate = picked);
     }
   }
 
   void submit() {
     if (_formKey.currentState!.validate()) {
-      // TODO Tags are split by comma and trimmed and stored as List<String>
-      final tagsList = _tagsController.text
+      final tags = _tagsController.text
           .split(',')
           .map((e) => e.trim())
           .where((e) => e.isNotEmpty)
@@ -78,7 +77,7 @@ class _DreamFormState extends State<DreamForm> {
         _contentController.text,
         _selectedDate,
         _clarityScore.round(),
-        tagsList,
+        tags,
       );
     }
   }
@@ -89,76 +88,89 @@ class _DreamFormState extends State<DreamForm> {
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 16,
         children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(
-              "Date: ${_selectedDate.day}.${_selectedDate.month}.${_selectedDate.year}",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            trailing: Icon(Icons.calendar_today),
-            onTap: pickDate,
-          ),
-
           TextFormField(
             controller: _titleController,
+            style: const TextStyle(color: Colors.white),
             decoration: const InputDecoration(
-              labelText: 'Title of the Dream',
-              border: OutlineInputBorder(),
-              prefixIcon: Icon(Icons.title),
+              labelText: 'Title (optional)',
+              labelStyle: TextStyle(color: AppTheme.sterlingSilver),
+              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
             ),
-            textInputAction: TextInputAction.next,
           ),
-
+          const SizedBox(height: 16),
           TextFormField(
             controller: _contentController,
+            style: const TextStyle(color: Colors.white),
             decoration: const InputDecoration(
-              labelText: 'What happend?',
-              border: OutlineInputBorder(),
+              labelText: 'What did you experience?',
+              labelStyle: TextStyle(color: AppTheme.sterlingSilver),
               alignLabelWithHint: true,
+              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
             ),
             maxLines: 5,
-            keyboardType: TextInputType.multiline,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please describe your dream.';
-              }
-              return null;
-            },
+            validator: (value) => (value == null || value.isEmpty) ? 'Please describe your dream.' : null,
           ),
-
+          const SizedBox(height: 24),
+          
+          InkWell(
+            onTap: pickDate,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              decoration: const BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.white24)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Date", style: TextStyle(color: AppTheme.sterlingSilver, fontSize: 12)),
+                      Text(
+                        "${_selectedDate.day}.${_selectedDate.month}.${_selectedDate.year}",
+                        style: const TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                  const Icon(Icons.calendar_today, color: AppTheme.burnishedGold, size: 20),
+                ],
+              ),
+            ),
+          ),
+          
+          const SizedBox(height: 24),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Clarity: ${_clarityScore.round()} / 5"),
+              Text("Klarheit: ${_clarityScore.round()} / 5", style: const TextStyle(color: AppTheme.sterlingSilver)),
               Slider(
                 value: _clarityScore,
+                activeColor: AppTheme.burnishedGold,
+                inactiveColor: Colors.white10,
                 min: 1,
                 max: 5,
                 divisions: 4,
-                label: _clarityScore.round().toString(),
                 onChanged: (val) => setState(() => _clarityScore = val),
               ),
             ],
           ),
-
+          const SizedBox(height: 16),
           TextFormField(
             controller: _tagsController,
+            style: const TextStyle(color: Colors.white),
             decoration: const InputDecoration(
               labelText: 'Tags (separate with commas)',
-              hintText: 'e.g., flying, water, nightmare',
-              border: OutlineInputBorder(),
-              prefixIcon: Icon(Icons.tag),
+              labelStyle: TextStyle(color: AppTheme.sterlingSilver),
+              prefixIcon: Icon(Icons.tag, color: AppTheme.sterlingSilver),
+              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
             ),
           ),
-
-          ElevatedButton(
+          const SizedBox(height: 32),
+          
+          DreamButton(
+            label: widget.initialDream == null ? 'Save Dream' : 'Save Edit',
             onPressed: submit,
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-            ),
-            child: const Text('Save Dream', style: TextStyle(fontSize: 16)),
           ),
         ],
       ),

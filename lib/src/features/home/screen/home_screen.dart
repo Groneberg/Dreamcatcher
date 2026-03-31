@@ -1,7 +1,11 @@
+import 'package:dreamcatcher/src/common/widget/background_container.dart';
+import 'package:dreamcatcher/src/common/widget/dream_fab.dart';
+import 'package:dreamcatcher/src/common/widget/frosted_glass_box.dart';
 import 'package:dreamcatcher/src/data/model/dream.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/features/dream_details/dream_detail_screen.dart';
 import 'package:dreamcatcher/src/features/quick_add/screen/quick_add_screen.dart';
+import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,8 +18,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
-  
-  bool _isQuickAddOpen = false; 
+  bool _isQuickAddOpen = false;
 
   @override
   void initState() {
@@ -41,10 +44,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Future<void> _openQuickAddScreen() async {
-    if (_isQuickAddOpen) return; 
+    if (_isQuickAddOpen) return;
 
     _isQuickAddOpen = true;
-    
+
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -62,63 +65,121 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('DreamCatcher'),
+        title: const Text(
+          'DreamCatcher',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
+        ),
         centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
-      body: StreamBuilder<List<Dream>>(
-        stream: widget.dbService.listenToDreams(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: BackgroundContainer(
+        child: SafeArea(
+          child: StreamBuilder<List<Dream>>(
+            stream: widget.dbService.listenToDreams(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-          final dreams = snapshot.data ?? [];
+              final dreams = snapshot.data ?? [];
 
-          if (dreams.isEmpty) {
-            return _buildEmptyState();
-          }
+              if (dreams.isEmpty) {
+                return _buildEmptyState();
+              }
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(8),
-            itemCount: dreams.length,
-            itemBuilder: (context, index) {
-              final dream = dreams[index];
-              return Dismissible(
-                key: Key(dream.id.toString()),
-                child: Card(
-                  child: ListTile(
-                    title: Text(dream.title ?? 'Unkown Dream'),
-                    subtitle: Text(
-                      dream.content,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+              return ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: dreams.length,
+                itemBuilder: (context, index) {
+                  final dream = dreams[index];
+
+                  return Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 12.0,
                     ),
-                    trailing: Text(
-                      _formattedDate(dream.date),
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DreamDetailScreen(
-                            dream: dream, 
-                            dbService: widget.dbService
-                          ),
+                    child: Dismissible(
+                      key: Key(dream.id.toString()),
+
+                      background: Container(
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withAlpha(150),
+                          borderRadius: BorderRadius.circular(24),
                         ),
-                      );
-                    },
-                  ),
-                ),
+                        child: const Icon(Icons.delete, color: Colors.white),
+                      ),
+
+                      child: FrostedGlassBox(
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 8,
+                          ),
+                          title: Text(
+                            dream.title ?? 'Unkown Dream',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                          subtitle: Text(
+                            dream.content,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: AppTheme.sterlingSilver.withAlpha(200),
+                              height: 1.4,
+                            ),
+                          ),
+                          trailing: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                _formattedDate(dream.date),
+                                style: const TextStyle(
+                                  color: AppTheme.burnishedGold,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              const Icon(
+                                Icons.chevron_right,
+                                color: Colors.white54,
+                                size: 20,
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DreamDetailScreen(
+                                  dream: dream,
+                                  dbService: widget.dbService,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                },
               );
             },
-          );
-        },
+          ),
+        ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: DreamFAB(
         onPressed: _openQuickAddScreen,
-        child: const Icon(Icons.add),
+        icon: Icons.add,
       ),
     );
   }
@@ -128,9 +189,16 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: const [
-          Icon(Icons.nights_stay, size: 64, color: Colors.grey),
-          SizedBox(height: 12),
-          Text('No dreams yet.', style: TextStyle(fontSize: 18)),
+          Icon(Icons.nights_stay, size: 80, color: AppTheme.sterlingSilver),
+          SizedBox(height: 16),
+          Text(
+            'Your dreamcatcher is empty.',
+            style: TextStyle(
+              fontSize: 20,
+              color: AppTheme.sterlingSilver,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
         ],
       ),
     );

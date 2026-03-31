@@ -1,8 +1,11 @@
+import 'package:dreamcatcher/src/common/widget/background_container.dart';
+import 'package:dreamcatcher/src/common/widget/dream_button.dart';
+import 'package:dreamcatcher/src/common/widget/frosted_glass_box.dart';
+import 'package:dreamcatcher/src/data/model/dream.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/features/edit_dream/screen/edit_dream_screen.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:dreamcatcher/src/data/model/dream.dart';
 
 class DreamDetailScreen extends StatelessWidget {
   final Dream dream;
@@ -18,150 +21,128 @@ class DreamDetailScreen extends StatelessWidget {
     return '${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.${d.year}';
   }
 
-  void deleteDream(BuildContext context) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Dream?'),
-        content: const Text(
-          'This entry will be permanently deleted. Are you sure?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirm == true && context.mounted) {
-      await dbService.deleteDream(dream.id);
-      if (context.mounted) {
-        Navigator.pop(context);
-      }
-    }
-  }
-
-  Widget _buildClarityStars(int score) {
-    return Row(
-      children: List.generate(5, (index) {
-        return Icon(
-          index < score ? Icons.star : Icons.star_border,
-          color: AppTheme.burnishedGold,
-          size: 20,
-        );
-      }),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(dream.title ?? 'Onknown Dream'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditDreamScreen(
-                    dbService: dbService,
-                    dreamToEdit: dream,
+    return StreamBuilder<Dream?>(
+      stream: dbService.listenToDreamById(dream.id),
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data == null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) => Navigator.pop(context));
+          return const SizedBox.shrink();
+        }
+
+        final currentDream = snapshot.data ?? dream;
+
+        return Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.edit_note, color: AppTheme.burnishedGold, size: 28),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditDreamScreen(
+                      dbService: dbService,
+                      dreamToEdit: currentDream,
+                    ),
                   ),
                 ),
-              );
-            },
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                onPressed: () => _confirmDelete(context),
+              ),
+            ],
           ),
-          IconButton(
-            icon: const Icon(Icons.delete_outline),
-            onPressed: () => deleteDream(context),
+          body: BackgroundContainer(
+            child: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: FrostedGlassBox(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _formattedDate(currentDream.date),
+                          style: const TextStyle(color: AppTheme.burnishedGold, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          currentDream.title ?? "Untitled Dream",
+                          style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 16),
+                        _buildClarityIndicator(currentDream.clarityScore),
+                        const Divider(height: 40, color: Colors.white24),
+                        Text(
+                          currentDream.content,
+                          style: const TextStyle(color: Colors.white, fontSize: 18, height: 1.6),
+                        ),
+                        if (currentDream.tags.isNotEmpty) ...[
+                          const SizedBox(height: 24),
+                          Wrap(
+                            spacing: 8,
+                            children: currentDream.tags.map((tag) => Chip(
+                              label: Text(tag, style: const TextStyle(color: Colors.white, fontSize: 12)),
+                              backgroundColor: AppTheme.lavender.withAlpha(50),
+                              side: BorderSide.none,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            )).toList(),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildClarityIndicator(int score) {
+    return Row(
+      children: List.generate(5, (index) => Icon(
+        index < score ? Icons.star : Icons.star_border,
+        color: AppTheme.burnishedGold,
+        size: 20,
+      )),
+    );
+  }
+
+  void _confirmDelete(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppTheme.navyBlue,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: const Text("Delete Dream?", style: TextStyle(color: Colors.white)),
+        content: const Text("Do you really want this memory to fade away forever?"),
+        actions: [
+          DreamButton(
+            label: "Keep", 
+            isPrimary: false, 
+            onPressed: () => Navigator.pop(context)
+          ),
+          const SizedBox(height: 8),
+          DreamButton(
+            label: "Delete", 
+            onPressed: () async {
+              await dbService.deleteDream(dream.id);
+              if (context.mounted) {
+                Navigator.of(context).pop(); // Dialog schließen
+                Navigator.of(context).pop(); // Zurück zum HomeScreen
+              }
+            }
           ),
         ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.calendar_month,
-                      size: 18,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      _formattedDate(dream.date),
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Text(
-                      "Clarity: ",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    _buildClarityStars(dream.clarityScore),
-                  ],
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 24),
-
-            if (dream.tags.isNotEmpty) ...[
-              Wrap(
-                spacing: 8.0,
-                runSpacing: 4.0,
-                children: dream.tags.map((tag) {
-                  return Chip(
-                    label: Text(tag),
-                    backgroundColor: Theme.of(
-                      context,
-                    ).colorScheme.primaryContainer,
-                    labelStyle: const TextStyle(fontSize: 12),
-                    padding: EdgeInsets.zero,
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 24),
-            ],
-
-            const Divider(color: Colors.white24),
-            const SizedBox(height: 16),
-
-            Text(
-              "Dream events",
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                color: Colors.grey,
-                letterSpacing: 1.2,
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            Text(
-              dream.content,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyLarge?.copyWith(height: 1.6, fontSize: 16),
-            ),
-
-            const SizedBox(height: 40),
-          ],
-        ),
       ),
     );
   }
