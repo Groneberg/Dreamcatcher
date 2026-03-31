@@ -1,5 +1,5 @@
 import 'package:dreamcatcher/src/data/services/database_service.dart';
-import 'package:dreamcatcher/src/features/add_dream/add_dream_screen.dart';
+import 'package:dreamcatcher/src/features/edit_dream/screen/edit_dream_screen.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:dreamcatcher/src/data/model/dream.dart';
@@ -72,7 +72,7 @@ class DreamDetailScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AddDreamScreen(
+                  builder: (context) => EditDreamScreen(
                     dbService: dbService,
                     dreamToEdit: dream,
                   ),

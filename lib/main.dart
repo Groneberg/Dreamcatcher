@@ -1,7 +1,5 @@
 import 'package:dreamcatcher/src/data/services/database_service.dart';
-import 'package:dreamcatcher/src/features/add_dream/add_dream_screen.dart';
-import 'package:dreamcatcher/src/features/add_dream/widgets/dream_form.dart';
-import 'package:dreamcatcher/src/features/home/home_screen.dart';
+import 'package:dreamcatcher/src/features/home/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'src/theme/app_theme.dart';
 
@@ -27,7 +25,6 @@ class MyApp extends StatelessWidget {
 
       theme: AppTheme.darkTheme,
       home: HomeScreen(dbService: dbService)
-      // AddDreamScreen(dbService: dbService)
     );
   }
 }
