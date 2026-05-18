@@ -19,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool _isQuickAddOpen = false;
+  List<Dream> _dreams = [];
 
   @override
   void initState() {
@@ -84,7 +85,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              final dreams = snapshot.data ?? [];
+              if (snapshot.hasData) {
+                _dreams = snapshot.data!;
+              }
+
+              final dreams = _dreams;
 
               if (dreams.isEmpty) {
                 return _buildEmptyState();
@@ -113,6 +118,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         child: const Icon(Icons.delete, color: Colors.white),
                       ),
 
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (direction) async {
+                        final dreamToDelete = dream;
+                        setState(() {
+                          _dreams.removeAt(index);
+                        });
+                        await widget.dbService.deleteDream(dreamToDelete.id);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Dream dissolved into the void... 🌌')),
+                          );
+                        }
+                      },
                       child: FrostedGlassBox(
                         child: ListTile(
                           contentPadding: const EdgeInsets.symmetric(
@@ -156,8 +174,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                               ),
                             ],
                           ),
-                          onTap: () {
-                            Navigator.push(
+                          onTap: () async {
+                            await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => DreamDetailScreen(
@@ -166,6 +184,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                 ),
                               ),
                             );
+                            setState(() {});
                           },
                         ),
                       ),

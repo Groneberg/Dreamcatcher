@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import '../model/dream.dart';
@@ -25,6 +27,8 @@ class DatabaseService {
 
   Future<void> deleteDream(int id) async {
     dreamBox.remove(id);
+    log(  "Dream with id $id deleted from database.");
+    log("Lösche Traum mit ID: ${id}");
   }
 
   Stream<List<Dream>> listenToDreams() {
