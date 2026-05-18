@@ -27,26 +27,21 @@ class FrostedGlassBox extends StatelessWidget {
           children: [
             BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12), 
-              child: Container(),
+
+              child: Container(
+                color: Colors.transparent,
+              ),
             ),
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
-                  color: AppTheme.sterlingSilver.withAlpha(76), // ca. 0.3 alpha
+                  color: AppTheme.sterlingSilver.withAlpha(30),
                   width: 1.2
                 ),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    AppTheme.deepPurple.withAlpha(89), // ca. 0.35 alpha
-                    AppTheme.navyBlue.withAlpha(38),   // ca. 0.15 alpha
-                  ],
-                ),
+                color: Colors.black.withAlpha(10), 
               ),
             ),
-            // Der eigentliche Inhalt
             child,
           ],
         ),

@@ -1,5 +1,5 @@
-// lib/src/features/quick_add/quick_add_screen.dart
 import 'package:dreamcatcher/src/common/widget/background_container.dart';
+import 'package:dreamcatcher/src/common/widget/dream_button.dart';
 import 'package:dreamcatcher/src/common/widget/frosted_glass_box.dart';
 import 'package:dreamcatcher/src/common/widget/gradient_focus_input.dart';
 import 'package:flutter/material.dart';
@@ -51,61 +51,51 @@ class _QuickAddScreenState extends State<QuickAddScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.white),
+          icon: const Icon(Icons.close, color: AppTheme.lightSterlingSilver),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: BackgroundContainer(
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              children: [
-                const SizedBox(height: 40),
-                const Text(
-                  "What did you dream?",
-                  style: TextStyle(
-                    color: AppTheme.sterlingSilver,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w300,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 40),
+                  const Text(
+                    "What did you dream?",
+                    style: TextStyle(
+                      color: AppTheme.lightSterlingSilver,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w300,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 30),
-                Expanded(
-                  child: FrostedGlassBox(
+                  const SizedBox(height: 30),
+                  FrostedGlassBox(
+                    height: 400,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          Expanded(
-                            child: GradientFocusInput(
-                              hintText: "Write it down before it fades...",
-                              controller: _controller,
-                            ),
+                          GradientFocusInput(
+                            hintText: "Write it down before it fades...",
+                            controller: _controller,
                           ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
+                          const Spacer(),
+                          DreamButton(
+                            label: "Add to Dreamcatcher",
                             onPressed: _saveQuickDream,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.burnishedGold,
-                              foregroundColor: AppTheme.navyBlue,
-                              minimumSize: const Size(double.infinity, 56),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            child: const Text(
-                              "Add to Dreamcatcher",
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
+                            isPrimary: true,
                           ),
                         ],
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 40),
-              ],
+                  const SizedBox(height: 40),
+                ],
+              ),
             ),
           ),
         ),

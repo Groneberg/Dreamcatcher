@@ -1,5 +1,11 @@
 # 🌙 DreamCatcher
 
+[English](#english) | [Deutsch](#deutsch)
+
+---
+
+## English
+
 A modern, private and performant dream journal, developed with **Flutter** and **Isar DB**.  
 This app allows users to quickly capture, rate and analyze their dreams. The focus is on privacy (offline-first), performance and a pleasant dark-mode design.
 
@@ -69,7 +75,9 @@ The application uses a harmonious color palette to create a calming, nocturnal a
 
 ---
 
-# 🌙 DreamCatcher (Deutsch)
+# 🌙 DreamCatcher
+
+## Deutsch
 
 Ein modernes, privates und performantes Traumtagebuch, entwickelt mit **Flutter** und **Isar DB**.
 Diese App ermöglicht es Nutzern, ihre Träume schnell zu erfassen, zu bewerten und zu analysieren. Der Fokus liegt auf Privatsphäre (Offline-First), Performance und einem angenehmen Dark-Mode-Design.

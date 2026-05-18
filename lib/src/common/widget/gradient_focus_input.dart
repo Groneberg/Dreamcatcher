@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class GradientFocusInput extends StatefulWidget {
   final String hintText;
-  final TextEditingController controller; // <-- NEU: Hier kommt der Text an
+  final TextEditingController controller;
 
   const GradientFocusInput({
     super.key, 
     required this.hintText,
-    required this.controller, // <-- NEU: Pflichtfeld
+    required this.controller,
   });
 
   @override
@@ -33,7 +33,6 @@ class _GradientFocusInputState extends State<GradientFocusInput> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // 1. Der Glow-Effekt im Hintergrund
         Positioned.fill(
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 600),
@@ -43,16 +42,16 @@ class _GradientFocusInputState extends State<GradientFocusInput> {
               boxShadow: _isFocused
                   ? [
                       BoxShadow(
-                        color: AppTheme.lavender.withAlpha(127), // 0.5
-                        blurRadius: 25,
-                        spreadRadius: 2,
-                        offset: const Offset(2, -2),
+                        color: AppTheme.lavender.withAlpha(80),
+                        blurRadius: 15,
+                        spreadRadius: 1,
+                        offset: const Offset(1, -1),
                       ),
                       BoxShadow(
-                        color: AppTheme.burnishedGold.withAlpha(76), // 0.3
-                        blurRadius: 25,
-                        spreadRadius: 2,
-                        offset: const Offset(-2, 2),
+                        color: AppTheme.burnishedGold.withAlpha(50),
+                        blurRadius: 15,
+                        spreadRadius: 1,
+                        offset: const Offset(-1, 1  ),
                       ),
                     ]
                   : [],
@@ -60,15 +59,14 @@ class _GradientFocusInputState extends State<GradientFocusInput> {
           ),
         ),
         
-        // 2. Das Eingabefeld mit dem Gradient-Border
         Container(
           padding: const EdgeInsets.all(1.5), 
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             gradient: LinearGradient(
               colors: [
-                AppTheme.deepPurple.withAlpha(204), // 0.8
-                AppTheme.lavender.withAlpha(127),   // 0.5
+                AppTheme.deepPurple.withAlpha(204), 
+                AppTheme.lavender.withAlpha(127), 
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -76,17 +74,17 @@ class _GradientFocusInputState extends State<GradientFocusInput> {
           ),
           child: Container(
             decoration: BoxDecoration(
-              color: AppTheme.navyBlue.withAlpha(153), // 0.6
+              color: AppTheme.navyBlue.withAlpha(40),
               borderRadius: BorderRadius.circular(19),
             ),
             child: TextField(
-              controller: widget.controller, // <-- NEU: Controller verknüpft
+              controller: widget.controller,
               focusNode: _focusNode,
               maxLines: null, 
-              style: const TextStyle(color: AppTheme.sterlingSilver, fontSize: 16),
+              style: const TextStyle(color: AppTheme.lightSterlingSilver, fontSize: 16),
               decoration: InputDecoration(
                 hintText: widget.hintText,
-                hintStyle: const TextStyle(color: Colors.white24),
+                hintStyle: TextStyle(color: AppTheme.lightSterlingSilver.withAlpha(150),),
                 border: InputBorder.none,
                 contentPadding: const EdgeInsets.all(18),
               ),

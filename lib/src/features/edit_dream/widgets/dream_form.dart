@@ -94,7 +94,7 @@ class _DreamFormState extends State<DreamForm> {
             style: const TextStyle(color: Colors.white),
             decoration: const InputDecoration(
               labelText: 'Title (optional)',
-              labelStyle: TextStyle(color: AppTheme.sterlingSilver),
+              labelStyle: TextStyle(color: AppTheme.lightSterlingSilver),
               enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
             ),
           ),
@@ -104,7 +104,7 @@ class _DreamFormState extends State<DreamForm> {
             style: const TextStyle(color: Colors.white),
             decoration: const InputDecoration(
               labelText: 'What did you experience?',
-              labelStyle: TextStyle(color: AppTheme.sterlingSilver),
+              labelStyle: TextStyle(color: AppTheme.lightSterlingSilver),
               alignLabelWithHint: true,
               enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
             ),
@@ -126,7 +126,7 @@ class _DreamFormState extends State<DreamForm> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Date", style: TextStyle(color: AppTheme.sterlingSilver, fontSize: 12)),
+                      const Text("Date", style: TextStyle(color: AppTheme.lightSterlingSilver, fontSize: 12)),
                       Text(
                         "${_selectedDate.day}.${_selectedDate.month}.${_selectedDate.year}",
                         style: const TextStyle(color: Colors.white, fontSize: 16),
@@ -143,7 +143,7 @@ class _DreamFormState extends State<DreamForm> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Klarheit: ${_clarityScore.round()} / 5", style: const TextStyle(color: AppTheme.sterlingSilver)),
+              Text("Klarheit: ${_clarityScore.round()} / 5", style: const TextStyle(color: AppTheme.lightSterlingSilver)),
               Slider(
                 value: _clarityScore,
                 activeColor: AppTheme.burnishedGold,
@@ -161,8 +161,8 @@ class _DreamFormState extends State<DreamForm> {
             style: const TextStyle(color: Colors.white),
             decoration: const InputDecoration(
               labelText: 'Tags (separate with commas)',
-              labelStyle: TextStyle(color: AppTheme.sterlingSilver),
-              prefixIcon: Icon(Icons.tag, color: AppTheme.sterlingSilver),
+              labelStyle: TextStyle(color: AppTheme.lightSterlingSilver),
+              prefixIcon: Icon(Icons.tag, color: AppTheme.lightSterlingSilver),
               enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
             ),
           ),

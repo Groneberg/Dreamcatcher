@@ -6,6 +6,8 @@ class AppTheme {
   static const Color deepPurple = Color(0xFF1B1464);     // Mystical violet
   static const Color lavender = Color(0xFFE0B0FF);       // Bright glow
   static const Color burnishedGold = Color(0xFFD4AF37);  // Stars/Details
+
+  static const Color lightSterlingSilver = Color(0xFFEAEAEA); // Texts/Contours
   static const Color sterlingSilver = Color(0xFFC0C0C0); // Texts/Contours
 
   static ThemeData get darkTheme {
@@ -13,16 +15,16 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       
-      // Background
+      // Core Colors
       scaffoldBackgroundColor: navyBlue,
       colorScheme: const ColorScheme.dark(
         primary: lavender,
         secondary: burnishedGold,
         surface: deepPurple,
-        onSurface: sterlingSilver,
+        onSurface: lightSterlingSilver,
       ),
 
-      // AppBar Design
+      // AppBar Theme
       appBarTheme: const AppBarTheme(
         backgroundColor: Color(0xFF050A1A), // Even darker navy
         foregroundColor: lavender,
@@ -30,7 +32,7 @@ class AppTheme {
         centerTitle: true,
       ),
 
-      // Card Design
+      // Card Theme
       cardTheme: CardThemeData(
         color: deepPurple.withValues(alpha: 0.5),
         shape: RoundedRectangleBorder(
@@ -39,18 +41,24 @@ class AppTheme {
         ),
       ),
 
-      // Input Design (für das DreamForm)
+      // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: Colors.black26,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: sterlingSilver),
+          borderSide: const BorderSide(color: lightSterlingSilver),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: lavender, width: 1.5),
         ),
         labelStyle: const TextStyle(color: lavender),
       ),
 
-      // Button Design
+      // Elevated Button Theme
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: deepPurple,

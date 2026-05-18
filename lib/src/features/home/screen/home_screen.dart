@@ -132,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: AppTheme.sterlingSilver.withAlpha(200),
+                              color: AppTheme.lightSterlingSilver.withAlpha(200),
                               height: 1.4,
                             ),
                           ),
@@ -189,13 +189,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: const [
-          Icon(Icons.nights_stay, size: 80, color: AppTheme.sterlingSilver),
+          Icon(Icons.nights_stay, size: 80, color: AppTheme.lightSterlingSilver),
           SizedBox(height: 16),
           Text(
             'Your dreamcatcher is empty.',
             style: TextStyle(
               fontSize: 20,
-              color: AppTheme.sterlingSilver,
+              color: AppTheme.lightSterlingSilver,
               fontWeight: FontWeight.w300,
             ),
           ),
