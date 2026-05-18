@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class GradientFocusInput extends StatefulWidget {
   final String hintText;
   final TextEditingController controller;
+  final bool autofocus;
 
   const GradientFocusInput({
     super.key, 
     required this.hintText,
     required this.controller,
+    this.autofocus = false,
   });
 
   @override
@@ -27,6 +29,12 @@ class _GradientFocusInputState extends State<GradientFocusInput> {
         _isFocused = _focusNode.hasFocus;
       });
     });
+    
+    if (widget.autofocus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _focusNode.requestFocus();
+      });
+    }
   }
 
   @override
@@ -80,6 +88,7 @@ class _GradientFocusInputState extends State<GradientFocusInput> {
             child: TextField(
               controller: widget.controller,
               focusNode: _focusNode,
+              autofocus: widget.autofocus,
               maxLines: null, 
               style: const TextStyle(color: AppTheme.lightSterlingSilver, fontSize: 16),
               decoration: InputDecoration(

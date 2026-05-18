@@ -23,6 +23,8 @@ class _QuickAddScreenState extends State<QuickAddScreen> with SingleTickerProvid
   late AnimationController _shakeController;
   late Animation<double> _shakeAnimation;
   String? _errorMessage;
+  bool _isSaving = false;
+  bool _isSuccess = false;
 
   @override
   void initState() {
@@ -72,6 +74,7 @@ class _QuickAddScreenState extends State<QuickAddScreen> with SingleTickerProvid
     
     setState(() {
       _errorMessage = null;
+      _isSaving = true;
     });
 
     final newDream = Dream(
@@ -83,10 +86,19 @@ class _QuickAddScreenState extends State<QuickAddScreen> with SingleTickerProvid
     await widget.dbService.saveDream(newDream);
 
     if (mounted) {
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Dream safely saved for later... 🌙')),
-      );
+      setState(() {
+        _isSaving = false;
+        _isSuccess = true;
+      });
+
+      await Future.delayed(const Duration(milliseconds: 800));
+
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Dream safely saved for later... 🌙')),
+        );
+      }
     }
   }
 
@@ -137,6 +149,7 @@ class _QuickAddScreenState extends State<QuickAddScreen> with SingleTickerProvid
                             child: GradientFocusInput(
                               hintText: "Write it down before it fades...",
                               controller: _controller,
+                              autofocus: true,
                             ),
                           ),
                           
@@ -155,9 +168,11 @@ class _QuickAddScreenState extends State<QuickAddScreen> with SingleTickerProvid
                           
                           const Spacer(),
                           DreamButton(
-                            label: "Add to Dreamcatcher",
-                            onPressed: _saveQuickDream,
-                            isPrimary: true,
+                            label: _isSuccess 
+                                ? "Saved securely! 🌟" 
+                                : (_isSaving ? "Locking in the memory..." : "Add to Dreamcatcher"),
+                            onPressed: (_isSaving || _isSuccess) ? () {} : _saveQuickDream,
+                            isPrimary: !_isSuccess,
                           ),
                         ],
                       ),
