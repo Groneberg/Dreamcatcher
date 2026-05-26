@@ -214,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                             vertical: 8,
                           ),
                           title: Text(
-                            dream.title ?? 'Unkown Dream',
+                            dream.title ?? 'Unknown Dream',
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
