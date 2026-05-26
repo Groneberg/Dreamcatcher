@@ -35,6 +35,20 @@ class DatabaseService {
     return watchFilteredDreams('');
   }
 
+  Stream<List<Dream>> searchDreams(String query) {
+    if (query.isEmpty) {
+      return listenToDreams();
+    }
+
+    final queryBuilder = dreamBox.query(
+      Dream_.title
+          .contains(query, caseSensitive: false)
+          .or(Dream_.content.contains(query, caseSensitive: false)),
+    )..order(Dream_.date, flags: Order.descending);
+
+    return queryBuilder.watch(triggerImmediately: true).map((q) => q.find());
+  }
+
   Stream<List<Dream>> watchFilteredDreams(String query) {
     if (query.isEmpty) {
       return dreamBox

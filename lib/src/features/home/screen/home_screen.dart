@@ -19,6 +19,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool _isQuickAddOpen = false;
+  bool _isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = "";
   List<Dream> _dreams = [];
 
   @override
@@ -33,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    _searchController.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -68,18 +72,53 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text(
-          'DreamCatcher',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
-        ),
+        title: _isSearching
+            ? TextField(
+                controller: _searchController,
+                autofocus: true,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  hintText: "Search your subconscious...",
+                  hintStyle: TextStyle(color: Colors.white38),
+                  border: InputBorder.none,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value.trim();
+                  });
+                },
+              )
+            : const Text(
+                'DreamCatcher',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
+              ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(
+              _isSearching ? Icons.close : Icons.search,
+              color: AppTheme.lavender,
+            ),
+            onPressed: () {
+              setState(() {
+                if (_isSearching) {
+                  _isSearching = false;
+                  _searchController.clear();
+                  _searchQuery = "";
+                } else {
+                  _isSearching = true;
+                }
+              });
+            },
+          ),
+        ],
       ),
       body: BackgroundContainer(
         child: SafeArea(
           child: StreamBuilder<List<Dream>>(
-            stream: widget.dbService.listenToDreams(),
+            stream: widget.dbService.searchDreams(_searchQuery),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Center(
@@ -118,7 +157,18 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               final dreams = _dreams;
 
               if (dreams.isEmpty) {
-                return _buildEmptyState();
+                return _isSearching
+                    ? const Center(
+                        child: Text(
+                          "No memories match your search. 🌫️",
+                          style: TextStyle(
+                            color: AppTheme.lightSterlingSilver,
+                            fontSize: 16,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    : _buildEmptyState();
               }
 
               return ListView.builder(

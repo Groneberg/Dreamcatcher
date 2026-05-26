@@ -143,7 +143,7 @@ class _DreamFormState extends State<DreamForm> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Klarheit: ${_clarityScore.round()} / 5", style: const TextStyle(color: AppTheme.lightSterlingSilver)),
+              Text("Clarity: ${_clarityScore.round()} / 5", style: const TextStyle(color: AppTheme.lightSterlingSilver)),
               Slider(
                 value: _clarityScore,
                 activeColor: AppTheme.burnishedGold,

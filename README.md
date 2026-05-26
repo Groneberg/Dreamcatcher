@@ -6,7 +6,7 @@
 
 ## English
 
-A modern, private and performant dream journal, developed with **Flutter** and **Isar DB**.  
+A modern, private and performant dream journal, developed with **Flutter** and **ObjectBox**.  
 This app allows users to quickly capture, rate and analyze their dreams. The focus is on privacy (offline-first), performance and a pleasant dark-mode design.
 
 ## 🧘 Design Philosophy: "The Silent Companion"
@@ -21,7 +21,7 @@ The development follows strict principles to optimally support the user in the m
 ## ✨ Features (MVP)
 
 * **Dream Capture:** Title, content, date, clarity (1-5 stars) and tags.
-* **Persistence:** Local storage using **Isar DB**.
+* **Persistence:** Local storage using **ObjectBox**.
 * **CRUD Operations:** Complete creating, reading, editing and deleting of entries.
 * **Smart UI:** Swipe-to-delete with undo function and reactive list updates via streams.
 * **Design:** Optimized Dark Mode ("Midnight Theme") for use at night.
@@ -38,7 +38,7 @@ The application uses a harmonious color palette to create a calming, nocturnal a
 ## 🛠 Technology Stack
 
 * **Framework:** Flutter
-* **Database:** [Isar Database](https://isar.dev/)
+* **Database:** [ObjectBox](https://objectbox.io/)
 * **Code Generation:** Build Runner for type-safe database queries.
 
 ## 🚀 Installation & Setup
@@ -49,7 +49,7 @@ The application uses a harmonious color palette to create a calming, nocturnal a
     ```
 
 2.  **Generate database models:**
-    Since Isar uses code generation, the build runner must be executed:
+    ObjectBox requires generated code to map your objects to the database:
     ```bash
     flutter pub run build_runner build --delete-conflicting-outputs
     ```
@@ -61,13 +61,12 @@ The application uses a harmonious color palette to create a calming, nocturnal a
 
 ## 🔮 Roadmap
 
+* [x] **Quick Entry:** Fast entry of dreams immediately after opening the application.
 * [ ] **Full Text Search:** Quickly find dream content (current focus).
-* [ ] **Quick Entry:** Fast entry of dreams immediately after opening the application.
 * [ ] **Smart Filter:** Filter by clarity, mood or specific periods.
 * [ ] **Categorization:** Filter by dream types (e.g., lucid, nightmare).
 * [ ] **Designs in Figma:** Finalization of UI components and widgets.
 * [ ] **Updating the Design:** Continuous visual adaptation of the application.
-* [ ] **Designs in Figma:** Elaborating components and widgets for a consistent UI/UX.
 * [ ] **Statistics:** Visualization of dream frequency and clarity.
 
 ---
@@ -79,7 +78,7 @@ The application uses a harmonious color palette to create a calming, nocturnal a
 
 ## Deutsch
 
-Ein modernes, privates und performantes Traumtagebuch, entwickelt mit **Flutter** und **Isar DB**.
+Ein modernes, privates und performantes Traumtagebuch, entwickelt mit **Flutter** und **ObjectBox**.
 Diese App ermöglicht es Nutzern, ihre Träume schnell zu erfassen, zu bewerten und zu analysieren. Der Fokus liegt auf Privatsphäre (Offline-First), Performance und einem angenehmen Dark-Mode-Design.
 
 ## 🧘 Design-Philosophie: "Der stille Begleiter"
@@ -94,7 +93,7 @@ Die Entwicklung folgt strikten Prinzipien, um den Nutzer im Moment des Erwachens
 ## ✨ Features (MVP)
 
 * **Traum-Erfassung:** Titel, Inhalt, Datum, Klarheit (1-5 Sterne) und Tags.
-* **Persistenz:** Lokale Speicherung mittels **Isar DB**.
+* **Persistenz:** Lokale Speicherung mittels **ObjectBox**.
 * **CRUD-Operationen:** Vollständiges Erstellen, Lesen, Bearbeiten und Löschen von Einträgen.
 * **Smart UI:** Swipe-to-Delete mit Undo-Funktion und reaktive Listen-Updates via Streams.
 * **Design:** Optimierter Dark Mode ("Midnight Theme") für die Nutzung in der Nacht.
@@ -111,7 +110,7 @@ Die Anwendung nutzt eine harmonische Farbpalette, um eine beruhigende, nächtlic
 ## 🛠 Technologie-Stack
 
 * **Framework:** Flutter
-* **Datenbank:** [Isar Database](https://isar.dev/)
+* **Datenbank:** [ObjectBox](https://objectbox.io/)
 * **Code Generation:** Build Runner für typsichere Datenbankabfragen.
 
 ## 🚀 Installation & Setup
@@ -122,7 +121,7 @@ Die Anwendung nutzt eine harmonische Farbpalette, um eine beruhigende, nächtlic
     ```
 
 2.  **Datenbank-Modelle generieren:**
-    Da Isar Code-Generierung nutzt, muss der Build-Runner ausgeführt werden:
+    ObjectBox benötigt generierten Code für die Datenbank-Modelle. Führe dazu den Build-Runner aus:
     ```bash
     flutter pub run build_runner build --delete-conflicting-outputs
     ```
@@ -134,13 +133,12 @@ Die Anwendung nutzt eine harmonische Farbpalette, um eine beruhigende, nächtlic
 
 ## 🔮 Roadmap
 
+* [x] **Schnelleintragung:** Schnelles Eintragen von Träumen direkt nach dem Öffnen der Anwendung.
 * [ ] **Volltextsuche:** Schnelles Finden von Trauminhalten (Aktueller Fokus).
-* [ ] **Schnelleintragung:** Schnelles Eintragen von Träumen direkt nach dem Öffnen der Anwendung.
 * [ ] **Smart Filter:** Filtern nach Klarheit, Stimmung oder spezifischen Zeiträumen.
 * [ ] **Kategorisierung:** Filtern nach Traum-Typen (z.B. Luzid, Albtraum).
 * [ ] **Designs in Figma:** Finalisierung der UI-Komponenten und Widgets.
 * [ ] **Aktualisierung des Designs:** Fortlaufende optische Anpassung der Anwendung.
-* [ ] **Designs in Figma:** Ausarbeitung von Komponenten und Widgets für ein konsistentes UI/UX.
 * [ ] **Statistiken:** Visualisierung der Traumfrequenz und Klarheit.
 
 ---

@@ -5,7 +5,10 @@ class Dream {
   @Id()
   int id; 
 
+  @Index()
   String? title;
+
+  @Index(type: IndexType.value)
   String content;
   
   @Property(type: PropertyType.date)
