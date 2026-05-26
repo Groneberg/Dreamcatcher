@@ -77,27 +77,40 @@ class _QuickAddScreenState extends State<QuickAddScreen> with SingleTickerProvid
       _isSaving = true;
     });
 
-    final newDream = Dream(
-      content: text,
-      date: DateTime.now(),
-      clarityScore: 3,
-    );
+    try {
+      final newDream = Dream(
+        content: text,
+        date: DateTime.now(),
+        clarityScore: 3,
+      );
 
-    await widget.dbService.saveDream(newDream);
-
-    if (mounted) {
-      setState(() {
-        _isSaving = false;
-        _isSuccess = true;
-      });
-
-      await Future.delayed(const Duration(milliseconds: 800));
+      await widget.dbService.saveDream(newDream);
 
       if (mounted) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Dream safely saved for later... 🌙')),
-        );
+        setState(() {
+          _isSaving = false;
+          _isSuccess = true;
+        });
+
+        await Future.delayed(const Duration(milliseconds: 800));
+
+        if (mounted) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Dream safely saved for later... 🌙')),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint("Error saving dream: $e");
+
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+          _isSuccess = false;
+          _errorMessage = "The mist is too thick. Could not secure the memory. 🌫️";
+        });
+        _shakeController.forward(from: 0.0);
       }
     }
   }
@@ -105,7 +118,8 @@ class _QuickAddScreenState extends State<QuickAddScreen> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -116,72 +130,46 @@ class _QuickAddScreenState extends State<QuickAddScreen> with SingleTickerProvid
       ),
       body: BackgroundContainer(
         child: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: 40),
-                  const Text(
-                    "What did you dream?",
-                    style: TextStyle(
-                      color: AppTheme.lightSterlingSilver,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w300,
-                    ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
+                    maxHeight: constraints.maxHeight,
                   ),
-                  const SizedBox(height: 30),
-                  FrostedGlassBox(
-                    height: 400,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          AnimatedBuilder(
-                            animation: _shakeAnimation,
-                            builder: (context, child) {
-                              return Transform.translate(
-                                offset: Offset(_shakeAnimation.value, 0),
-                                child: child,
-                              );
-                            },
-                            child: GradientFocusInput(
-                              hintText: "Write it down before it fades...",
-                              controller: _controller,
-                              autofocus: true,
-                            ),
-                          ),
-                          
-                          if (_errorMessage != null) ...[
-                            const SizedBox(height: 12),
-                            Text(
-                              _errorMessage!,
-                              style: const TextStyle(
-                                color: Colors.redAccent,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: FrostedGlassBox(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: GradientFocusInput(
+                                hintText: "Write it down before it fades...",
+                                controller: _controller,
+                                autofocus: true,
                               ),
-                              textAlign: TextAlign.center,
                             ),
-                          ],
-                          
-                          const Spacer(),
-                          DreamButton(
-                            label: _isSuccess 
-                                ? "Saved securely! 🌟" 
-                                : (_isSaving ? "Locking in the memory..." : "Add to Dreamcatcher"),
-                            onPressed: (_isSaving || _isSuccess) ? () {} : _saveQuickDream,
-                            isPrimary: !_isSuccess,
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 16),
+                        DreamButton(
+                          label: _isSuccess
+                              ? "Saved securely! 🌟"
+                              : (_isSaving ? "Locking in the memory..." : "Add to Dreamcatcher"),
+                          onPressed: (_isSaving || _isSuccess) ? () {} : _saveQuickDream,
+                          isPrimary: !_isSuccess,
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 40),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),

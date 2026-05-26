@@ -81,6 +81,32 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           child: StreamBuilder<List<Dream>>(
             stream: widget.dbService.listenToDreams(),
             builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.cloud_off, color: Colors.redAccent, size: 48),
+                        const SizedBox(height: 16),
+                        const Text(
+                          "Your dreams are temporarily hidden in the mist.",
+                          style: TextStyle(color: AppTheme.lightSterlingSilver, fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Error: ${snapshot.error}",
+                          style: const TextStyle(color: Colors.white24, fontSize: 12),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
