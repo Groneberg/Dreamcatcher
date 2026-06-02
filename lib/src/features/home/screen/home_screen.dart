@@ -8,6 +8,8 @@ import 'package:dreamcatcher/src/features/quick_add/screen/quick_add_screen.dart
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
+enum SearchMode { none, text, tag }
+
 class HomeScreen extends StatefulWidget {
   final DatabaseService dbService;
 
@@ -19,19 +21,21 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool _isQuickAddOpen = false;
-  bool _isSearching = false;
+  
+  SearchMode _searchMode = SearchMode.none;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
-  List<Dream> _dreams = [];
+  List<String> _activeTags = [];
+  List<String> _allAvailableTags = [];
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _openQuickAddScreen();
     });
+    _updateAvailableTags();
   }
 
   @override
@@ -41,240 +45,289 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _openQuickAddScreen();
-    }
+  void _updateAvailableTags() {
+    setState(() {
+      _allAvailableTags = widget.dbService.getAllUniqueTags();
+    });
   }
 
-  Future<void> _openQuickAddScreen() async {
+  void _openQuickAddScreen() async {
     if (_isQuickAddOpen) return;
-
     _isQuickAddOpen = true;
 
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => QuickAddScreen(dbService: widget.dbService),
-      ),
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => QuickAddScreen(dbService: widget.dbService),
     );
 
     _isQuickAddOpen = false;
-  }
-
-  String _formattedDate(DateTime d) {
-    return '${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.${d.year}';
+    _updateAvailableTags(); 
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget appBarTitle;
+    Widget? appBarPrefix;
+
+    if (_searchMode == SearchMode.none) {
+      appBarTitle = const Text('DreamCatcher');
+    } else {
+      appBarPrefix = Icon(
+        _searchMode == SearchMode.text ? Icons.search : Icons.local_offer,
+        color: AppTheme.lavender,
+      );
+      appBarTitle = TextField(
+        controller: _searchController,
+        autofocus: true,
+        style: const TextStyle(color: Colors.white),
+        decoration: InputDecoration(
+          hintText: _searchMode == SearchMode.text
+              ? "Search your subconscious..."
+              : "Search tags (e.g., Lucid, Flight)...",
+          hintStyle: const TextStyle(color: Colors.white38),
+          border: InputBorder.none,
+          prefixIcon: appBarPrefix,
+        ),
+        onChanged: (value) {
+          setState(() {
+            _searchQuery = value.trim();
+          });
+        },
+      );
+    }
+
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: _isSearching
-            ? TextField(
-                controller: _searchController,
-                autofocus: true,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  hintText: "Search your subconscious...",
-                  hintStyle: TextStyle(color: Colors.white38),
-                  border: InputBorder.none,
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _searchQuery = value.trim();
-                  });
-                },
-              )
-            : const Text(
-                'DreamCatcher',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
-              ),
-        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
+        title: appBarTitle,
         actions: [
-          IconButton(
-            icon: Icon(
-              _isSearching ? Icons.close : Icons.search,
-              color: AppTheme.lavender,
+          if (_searchMode == SearchMode.none) ...[
+            IconButton(
+              icon: const Icon(Icons.search, color: AppTheme.lavender),
+              onPressed: () {
+                setState(() => _searchMode = SearchMode.text);
+              },
             ),
-            onPressed: () {
-              setState(() {
-                if (_isSearching) {
-                  _isSearching = false;
+            IconButton(
+              icon: Icon(
+                _activeTags.isNotEmpty ? Icons.local_offer : Icons.local_offer_outlined,
+                color: _activeTags.isNotEmpty ? AppTheme.burnishedGold : AppTheme.lavender,
+              ),
+              onPressed: () {
+                _updateAvailableTags();
+                setState(() => _searchMode = SearchMode.tag);
+              },
+            ),
+          ] else
+            IconButton(
+              icon: const Icon(Icons.close, color: AppTheme.lavender),
+              onPressed: () {
+                setState(() {
+                  _searchMode = SearchMode.none;
                   _searchController.clear();
                   _searchQuery = "";
-                } else {
-                  _isSearching = true;
-                }
-              });
-            },
-          ),
+                });
+              },
+            ),
         ],
       ),
       body: BackgroundContainer(
         child: SafeArea(
-          child: StreamBuilder<List<Dream>>(
-            stream: widget.dbService.searchDreams(_searchQuery),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.cloud_off, color: Colors.redAccent, size: 48),
-                        const SizedBox(height: 16),
-                        const Text(
-                          "Your dreams are temporarily hidden in the mist.",
-                          style: TextStyle(color: AppTheme.lightSterlingSilver, fontSize: 16),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          "Error: ${snapshot.error}",
-                          style: const TextStyle(color: Colors.white24, fontSize: 12),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
+          child: Column(
+            children: [
+              if (_searchMode == SearchMode.tag) _buildTagSuggestionsPanel(),
+
+              if (_activeTags.isNotEmpty) _buildActiveFiltersRow(),
+
+              Expanded(
+                child: StreamBuilder<List<Dream>>(
+                  stream: widget.dbService.watchCombinedDreams(
+                    query: _searchMode == SearchMode.text ? _searchQuery : "",
+                    activeTags: _activeTags,
                   ),
-                );
-              }
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return const Center(child: Text('Error loading memories.'));
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator(color: AppTheme.lavender));
+                    }
 
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
+                    final dreams = snapshot.data ?? [];
+                    if (dreams.isEmpty) {
+                      return _searchMode != SearchMode.none || _activeTags.isNotEmpty
+                          ? const Center(child: Text("No memories match your active filters. 🌫️"))
+                          : _buildEmptyState();
+                    }
 
-              if (snapshot.hasData) {
-                _dreams = snapshot.data!;
-              }
-
-              final dreams = _dreams;
-
-              if (dreams.isEmpty) {
-                return _isSearching
-                    ? const Center(
-                        child: Text(
-                          "No memories match your search. 🌫️",
-                          style: TextStyle(
-                            color: AppTheme.lightSterlingSilver,
-                            fontSize: 16,
+                    return ListView.builder(
+                      itemCount: dreams.length,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      itemBuilder: (context, index) {
+                        final dream = dreams[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: FrostedGlassBox(
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.all(16),
+                              title: Text(
+                                dream.title?.isNotEmpty == true ? dream.title! : 'Unknown Dream',
+                                style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  dream.content,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(color: AppTheme.lightSterlingSilver),
+                                ),
+                              ),
+                              trailing: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '${dream.date.day}.${dream.date.month}',
+                                    style: const TextStyle(color: AppTheme.lavender, fontSize: 12),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  const Icon(Icons.chevron_right, color: AppTheme.lightSterlingSilver, size: 20),
+                                ],
+                              ),
+                              onTap: () async {
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DreamDetailScreen(
+                                      dream: dream,
+                                      dbService: widget.dbService,
+                                    ),
+                                  ),
+                                );
+                                _updateAvailableTags();
+                                setState(() {});
+                              },
+                            ),
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      )
-                    : _buildEmptyState();
-              }
-
-              return ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: dreams.length,
-                itemBuilder: (context, index) {
-                  final dream = dreams[index];
-
-                  return Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: 12.0,
-                    ),
-                    child: Dismissible(
-                      key: Key(dream.id.toString()),
-
-                      background: Container(
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.only(right: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.red.withAlpha(150),
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        child: const Icon(Icons.delete, color: Colors.white),
-                      ),
-
-                      direction: DismissDirection.endToStart,
-                      onDismissed: (direction) async {
-                        final dreamToDelete = dream;
-                        setState(() {
-                          _dreams.removeAt(index);
-                        });
-                        await widget.dbService.deleteDream(dreamToDelete.id);
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Dream dissolved into the void... 🌌')),
-                          );
-                        }
+                        );
                       },
-                      child: FrostedGlassBox(
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 8,
-                          ),
-                          title: Text(
-                            dream.title ?? 'Unknown Dream',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                          subtitle: Text(
-                            dream.content,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: AppTheme.lightSterlingSilver.withAlpha(200),
-                              height: 1.4,
-                            ),
-                          ),
-                          trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                _formattedDate(dream.date),
-                                style: const TextStyle(
-                                  color: AppTheme.burnishedGold,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              const Icon(
-                                Icons.chevron_right,
-                                color: Colors.white54,
-                                size: 20,
-                              ),
-                            ],
-                          ),
-                          onTap: () async {
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DreamDetailScreen(
-                                  dream: dream,
-                                  dbService: widget.dbService,
-                                ),
-                              ),
-                            );
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),
       floatingActionButton: DreamFAB(
         onPressed: _openQuickAddScreen,
         icon: Icons.add,
+      ),
+    );
+  }
+
+  Widget _buildTagSuggestionsPanel() {
+    final filteredTags = _allAvailableTags
+        .where((tag) => tag.toLowerCase().contains(_searchQuery.toLowerCase()))
+        .toList();
+
+    if (filteredTags.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: FrostedGlassBox(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Tap to filter by tag:",
+                style: TextStyle(color: AppTheme.lightSterlingSilver, fontSize: 12),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: filteredTags.map((tag) {
+                  final isSelected = _activeTags.contains(tag);
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        if (isSelected) {
+                          _activeTags.remove(tag);
+                        } else {
+                          _activeTags.add(tag);
+                        }
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: isSelected ? AppTheme.burnishedGold.withOpacity(0.2) : Colors.white.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: isSelected ? AppTheme.burnishedGold : AppTheme.lavender.withOpacity(0.3),
+                        ),
+                      ),
+                      child: Text(
+                        tag,
+                        style: TextStyle(
+                          color: isSelected ? AppTheme.burnishedGold : Colors.white,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActiveFiltersRow() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+      child: Row(
+        children: [
+          const Icon(Icons.filter_list, color: AppTheme.burnishedGold, size: 16),
+          const SizedBox(width: 8),
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: _activeTags.map((tag) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 6.0),
+                    child: InputChip(
+                      label: Text(tag, style: const TextStyle(color: AppTheme.burnishedGold, fontSize: 12)),
+                      backgroundColor: AppTheme.burnishedGold.withOpacity(0.1),
+                      deleteIconColor: AppTheme.burnishedGold,
+                      onDeleted: () {
+                        setState(() => _activeTags.remove(tag));
+                      },
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      side: const BorderSide(color: AppTheme.burnishedGold, width: 0.5),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => setState(() => _activeTags.clear()),
+            child: const Text("Clear", style: TextStyle(color: AppTheme.lavender, fontSize: 12)),
+          )
+        ],
       ),
     );
   }

@@ -27,8 +27,8 @@ class DatabaseService {
 
   Future<void> deleteDream(int id) async {
     dreamBox.remove(id);
-    log(  "Dream with id $id deleted from database.");
-    log("Lösche Traum mit ID: ${id}");
+    log("Dream with id $id deleted from database.");
+    log("Lösche Traum mit ID: $id");
   }
 
   Stream<List<Dream>> listenToDreams() {
@@ -65,6 +65,39 @@ class DatabaseService {
     )..order(Dream_.date, flags: Order.descending);
 
     return queryBuilder.watch(triggerImmediately: true).map((q) => q.find());
+  }
+
+  List<String> getAllUniqueTags() {
+    final dreams = dreamBox.getAll();
+    final tagsSet = <String>{};
+    for (final dream in dreams) {
+      tagsSet.addAll(dream.tags);
+    }
+    return tagsSet.toList()..sort();
+  }
+
+  Stream<List<Dream>> watchCombinedDreams({
+    required String query,
+    required List<String> activeTags,
+  }) {
+    final queryBuilder = query.isNotEmpty
+        ? dreamBox.query(
+            Dream_.title
+                .contains(query, caseSensitive: false)
+                .or(Dream_.content.contains(query, caseSensitive: false)),
+          )
+        : dreamBox.query();
+
+    queryBuilder.order(Dream_.date, flags: Order.descending);
+
+    return queryBuilder.watch(triggerImmediately: true).map((q) {
+      final results = q.find();
+      if (activeTags.isEmpty) return results;
+
+      return results.where((dream) {
+        return activeTags.every((tag) => dream.tags.contains(tag));
+      }).toList();
+    });
   }
 
   Future<List<Dream>> getAllDreams() async {
