@@ -4,6 +4,7 @@ import 'package:dreamcatcher/src/common/widget/frosted_glass_box.dart';
 import 'package:dreamcatcher/src/data/model/dream.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/features/dream_details/dream_detail_screen.dart';
+import 'package:dreamcatcher/src/features/home/widgets/search_filter_panel.dart';
 import 'package:dreamcatcher/src/features/quick_add/screen/quick_add_screen.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   String _searchQuery = "";
   List<String> _activeTags = [];
   List<String> _allAvailableTags = [];
+  DateTimeRange? _selectedDateRange;
 
   @override
   void initState() {
@@ -142,13 +144,23 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             children: [
               if (_searchMode == SearchMode.tag) _buildTagSuggestionsPanel(),
 
-              if (_activeTags.isNotEmpty) _buildActiveFiltersRow(),
+              SearchFilterPanel(
+                selectedRange: _selectedDateRange,
+                onRangeSelected: (range) {
+                  setState(() {
+                    _selectedDateRange = range;
+                  });
+                },
+              ),
+
+              if (_activeTags.isNotEmpty || _selectedDateRange != null) _buildActiveFiltersRow(),
 
               Expanded(
                 child: StreamBuilder<List<Dream>>(
                   stream: widget.dbService.watchCombinedDreams(
-                    query: _searchMode == SearchMode.text ? _searchQuery : "",
+                    textQuery: _searchMode == SearchMode.text ? _searchQuery : null,
                     activeTags: _activeTags,
+                    selectedRange: _selectedDateRange,
                   ),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
@@ -255,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: filteredTags.map((tag) {
+                children: filteredTags.map<Widget>((tag) {
                   final isSelected = _activeTags.contains(tag);
                   return GestureDetector(
                     onTap: () {
@@ -270,10 +282,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: isSelected ? AppTheme.burnishedGold.withOpacity(0.2) : Colors.white.withOpacity(0.05),
+                        color: isSelected ? AppTheme.burnishedGold.withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: isSelected ? AppTheme.burnishedGold : AppTheme.lavender.withOpacity(0.3),
+                          color: isSelected ? AppTheme.burnishedGold : AppTheme.lavender.withValues(alpha: 0.3),
                         ),
                       ),
                       child: Text(
@@ -295,6 +307,46 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildActiveFiltersRow() {
+    final List<Widget> allChips = [
+      ..._activeTags.map<Widget>((tag) {
+        return Padding(
+          padding: const EdgeInsets.only(right: 6.0),
+          child: InputChip(
+            label: Text(tag, style: const TextStyle(color: AppTheme.burnishedGold, fontSize: 12)),
+            backgroundColor: AppTheme.burnishedGold.withValues(alpha: 0.1),
+            deleteIconColor: AppTheme.burnishedGold,
+            onDeleted: () {
+              setState(() => _activeTags.remove(tag));
+            },
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            side: const BorderSide(color: AppTheme.burnishedGold, width: 0.5),
+          ),
+        );
+      }),
+      if (_selectedDateRange != null)
+        Padding(
+          padding: const EdgeInsets.only(right: 6.0),
+          child: InputChip(
+            avatar: const Icon(Icons.calendar_today, size: 12, color: AppTheme.burnishedGold),
+            label: Text(
+              _selectedDateRange!.start == _selectedDateRange!.end
+                  ? '${_selectedDateRange!.start.day}.${_selectedDateRange!.start.month}.${_selectedDateRange!.start.year}'
+                  : 'Timeline Filter',
+              style: const TextStyle(color: AppTheme.burnishedGold, fontSize: 12),
+            ),
+            backgroundColor: AppTheme.burnishedGold.withValues(alpha: 0.1),
+            deleteIconColor: AppTheme.burnishedGold,
+            onDeleted: () {
+              setState(() {
+                _selectedDateRange = null;
+              });
+            },
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            side: const BorderSide(color: AppTheme.burnishedGold, width: 0.5),
+          ),
+        ),
+    ];
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       child: Row(
@@ -305,26 +357,15 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: _activeTags.map((tag) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 6.0),
-                    child: InputChip(
-                      label: Text(tag, style: const TextStyle(color: AppTheme.burnishedGold, fontSize: 12)),
-                      backgroundColor: AppTheme.burnishedGold.withOpacity(0.1),
-                      deleteIconColor: AppTheme.burnishedGold,
-                      onDeleted: () {
-                        setState(() => _activeTags.remove(tag));
-                      },
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      side: const BorderSide(color: AppTheme.burnishedGold, width: 0.5),
-                    ),
-                  );
-                }).toList(),
+                children: allChips,
               ),
             ),
           ),
           TextButton(
-            onPressed: () => setState(() => _activeTags.clear()),
+            onPressed: () => setState(() {
+              _activeTags.clear();
+              _selectedDateRange = null;
+            }),
             child: const Text("Clear", style: TextStyle(color: AppTheme.lavender, fontSize: 12)),
           )
         ],

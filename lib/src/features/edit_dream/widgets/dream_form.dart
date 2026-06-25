@@ -53,12 +53,57 @@ class _DreamFormState extends State<DreamForm> {
   }
 
   Future<void> pickDate() async {
-    final picked = await showDatePicker(
+    final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
-      firstDate: DateTime(2000),
+      firstDate: DateTime(2020),
       lastDate: DateTime.now(),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.dark(
+              primary: AppTheme.burnishedGold,
+              onPrimary: AppTheme.navyBlue,
+              surface: AppTheme.deepPurple,
+              onSurface: AppTheme.lightSterlingSilver,
+              surfaceContainerHigh: AppTheme.navyBlue,
+              surfaceContainerHighest: AppTheme.navyBlue,
+            ),
+            datePickerTheme: DatePickerThemeData(
+              headerBackgroundColor: AppTheme.navyBlue,
+              headerForegroundColor: AppTheme.lavender,
+              backgroundColor: AppTheme.deepPurple,
+              dividerColor: Colors.white10,
+              dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) return AppTheme.navyBlue;
+                return AppTheme.lightSterlingSilver;
+              }),
+              dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) return AppTheme.burnishedGold;
+                return null;
+              }),
+              todayForegroundColor: WidgetStateProperty.all(AppTheme.burnishedGold),
+              todayBorder: const BorderSide(color: AppTheme.burnishedGold, width: 1.5),
+              yearForegroundColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) return AppTheme.navyBlue;
+                return AppTheme.lightSterlingSilver;
+              }),
+              yearBackgroundColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) return AppTheme.burnishedGold;
+                return null;
+              }),
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: AppTheme.lavender,
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
+
     if (picked != null && picked != _selectedDate) {
       setState(() => _selectedDate = picked);
     }

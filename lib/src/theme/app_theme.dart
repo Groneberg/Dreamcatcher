@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   // Definition of the color palette
-  static const Color navyBlue = Color(0xFF0A1128);       // Deep night sky
-  static const Color deepPurple = Color(0xFF1B1464);     // Mystical violet
-  static const Color lavender = Color(0xFFE0B0FF);       // Bright glow
-  static const Color burnishedGold = Color(0xFFD4AF37);  // Stars/Details
+  static const Color navyBlue = Color(0xFF0A1128); // Deep night sky
+  static const Color deepPurple = Color(0xFF1B1464); // Mystical violet
+  static const Color lavender = Color(0xFFE0B0FF); // Bright glow
+  static const Color burnishedGold = Color(0xFFD4AF37); // Stars/Details
 
   static const Color lightSterlingSilver = Color(0xFFEAEAEA); // Texts/Contours
   static const Color sterlingSilver = Color(0xFFC0C0C0); // Texts/Contours
@@ -14,7 +14,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      
+
       // Core Colors
       scaffoldBackgroundColor: navyBlue,
       colorScheme: const ColorScheme.dark(
@@ -22,6 +22,12 @@ class AppTheme {
         secondary: burnishedGold,
         surface: deepPurple,
         onSurface: lightSterlingSilver,
+
+        primaryContainer: navyBlue,
+        onPrimaryContainer: lavender,
+        secondaryContainer: deepPurple,
+        onSecondaryContainer: sterlingSilver,
+        
       ),
 
       // AppBar Theme
