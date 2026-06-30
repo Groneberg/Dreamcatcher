@@ -31,6 +31,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   List<String> _allAvailableTags = [];
   DateTimeRange? _selectedDateRange;
 
+  String get _timeBasedGreeting {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good morning. Sleep well?';
+    if (hour < 18) return 'Welcome back.';
+    return 'The night is here. Any dreams?';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -76,7 +83,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     Widget? appBarPrefix;
 
     if (_searchMode == SearchMode.none) {
-      appBarTitle = const Text('DreamCatcher');
+      appBarTitle = Text(
+        _timeBasedGreeting,
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+      );
     } else {
       appBarPrefix = Icon(
         _searchMode == SearchMode.text ? Icons.search : Icons.local_offer,
