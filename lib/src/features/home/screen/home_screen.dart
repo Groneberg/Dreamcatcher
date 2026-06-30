@@ -174,15 +174,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 }),
               ),
 
-              SearchFilterPanel(
-                selectedRange: _selectedDateRange,
-                onRangeSelected: (range) {
-                  setState(() {
-                    _selectedDateRange = range;
-                  });
-                },
-              ),
-
               Expanded(
                 child: StreamBuilder<List<Dream>>(
                   stream: widget.dbService.watchCombinedDreams(
@@ -193,6 +184,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     selectedRange: _selectedDateRange,
                   ),
                   builder: (context, snapshot) {
+                    final hasActiveFilters =
+                        _searchQuery.trim().isNotEmpty ||
+                        _activeTags.isNotEmpty ||
+                        _selectedDateRange != null ||
+                        _searchMode == SearchMode.tag;
+
                     if (snapshot.hasError) {
                       return const Center(
                         child: Text('Error loading memories.'),
@@ -207,37 +204,52 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     }
 
                     final dreams = snapshot.data ?? [];
-                    if (dreams.isEmpty) {
-                      return _searchMode != SearchMode.none ||
-                              _activeTags.isNotEmpty
-                          ? const Center(
-                              child: Text(
-                                "No memories match your active filters. 🌫️",
-                              ),
-                            )
-                          : _buildEmptyState();
+                    if (dreams.isEmpty && !hasActiveFilters) {
+                      return _buildEmptyState();
                     }
 
-                    return DreamList(
-                      dreams: dreams,
-                      onTap: (dream) async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DreamDetailScreen(
-                              dream: dream,
-                              dbService: widget.dbService,
-                            ),
-                          ),
-                        );
-                        _updateAvailableTags();
-                        setState(() {});
-                      },
-                      onDelete: (dream) async {
-                        await widget.dbService.deleteDream(dream.id);
-                        _updateAvailableTags();
-                        setState(() {});
-                      },
+                    return Column(
+                      children: [
+                        SearchFilterPanel(
+                          selectedRange: _selectedDateRange,
+                          onRangeSelected: (range) {
+                            setState(() {
+                              _selectedDateRange = range;
+                            });
+                          },
+                        ),
+                        Expanded(
+                          child: dreams.isEmpty
+                              ? const Center(
+                                  child: Text(
+                                    "No memories match your active filters. 🌫️",
+                                  ),
+                                )
+                              : DreamList(
+                                  dreams: dreams,
+                                  onTap: (dream) async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DreamDetailScreen(
+                                          dream: dream,
+                                          dbService: widget.dbService,
+                                        ),
+                                      ),
+                                    );
+                                    _updateAvailableTags();
+                                    setState(() {});
+                                  },
+                                  onDelete: (dream) async {
+                                    await widget.dbService.deleteDream(
+                                      dream.id,
+                                    );
+                                    _updateAvailableTags();
+                                    setState(() {});
+                                  },
+                                ),
+                        ),
+                      ],
                     );
                   },
                 ),
@@ -256,24 +268,38 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   Widget _buildEmptyState() {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: const [
-          Icon(
-            Icons.nights_stay,
-            size: 80,
-            color: AppTheme.lightSterlingSilver,
-          ),
-          SizedBox(height: 16),
-          Text(
-            'Your dreamcatcher is empty.',
-            style: TextStyle(
-              fontSize: 20,
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(
+              Icons.nights_stay,
+              size: 80,
               color: AppTheme.lightSterlingSilver,
-              fontWeight: FontWeight.w300,
             ),
-          ),
-        ],
+            SizedBox(height: 24),
+            Text(
+              'The night leaves its mark.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 22,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 12),
+            Text(
+              'Every dream finds a safe place here.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: AppTheme.lightSterlingSilver,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
