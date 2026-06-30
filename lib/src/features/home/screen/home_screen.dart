@@ -1,10 +1,11 @@
 import 'package:dreamcatcher/src/common/widget/background_container.dart';
 import 'package:dreamcatcher/src/common/widget/dream_fab.dart';
-import 'package:dreamcatcher/src/common/widget/frosted_glass_box.dart';
 import 'package:dreamcatcher/src/data/model/dream.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/features/dream_details/dream_detail_screen.dart';
 import 'package:dreamcatcher/src/features/home/widgets/search_filter_panel.dart';
+import 'package:dreamcatcher/src/features/home/widgets/dream_list.dart';
+import 'package:dreamcatcher/src/features/home/widgets/filter_bar.dart';
 import 'package:dreamcatcher/src/features/quick_add/screen/quick_add_screen.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool _isQuickAddOpen = false;
-  
+
   SearchMode _searchMode = SearchMode.none;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
@@ -65,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     );
 
     _isQuickAddOpen = false;
-    _updateAvailableTags(); 
+    _updateAvailableTags();
     setState(() {});
   }
 
@@ -117,8 +118,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             ),
             IconButton(
               icon: Icon(
-                _activeTags.isNotEmpty ? Icons.local_offer : Icons.local_offer_outlined,
-                color: _activeTags.isNotEmpty ? AppTheme.burnishedGold : AppTheme.lavender,
+                _activeTags.isNotEmpty
+                    ? Icons.local_offer
+                    : Icons.local_offer_outlined,
+                color: _activeTags.isNotEmpty
+                    ? AppTheme.burnishedGold
+                    : AppTheme.lavender,
               ),
               onPressed: () {
                 _updateAvailableTags();
@@ -142,7 +147,32 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         child: SafeArea(
           child: Column(
             children: [
-              if (_searchMode == SearchMode.tag) _buildTagSuggestionsPanel(),
+              FilterBar(
+                showTagSuggestions: _searchMode == SearchMode.tag,
+                allAvailableTags: _allAvailableTags,
+                searchQuery: _searchQuery,
+                activeTags: _activeTags,
+                selectedRange: _selectedDateRange,
+                onToggleTag: (tag) => setState(() {
+                  if (_activeTags.contains(tag)) {
+                    _activeTags.remove(tag);
+                  } else {
+                    _activeTags.add(tag);
+                  }
+                }),
+                onRangeSelected: (range) {
+                  setState(() {
+                    _selectedDateRange = range;
+                  });
+                },
+                onClear: () => setState(() {
+                  _activeTags.clear();
+                  _selectedDateRange = null;
+                }),
+                onRemoveTag: (tag) => setState(() {
+                  _activeTags.remove(tag);
+                }),
+              ),
 
               SearchFilterPanel(
                 selectedRange: _selectedDateRange,
@@ -153,80 +183,60 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 },
               ),
 
-              if (_activeTags.isNotEmpty || _selectedDateRange != null) _buildActiveFiltersRow(),
-
               Expanded(
                 child: StreamBuilder<List<Dream>>(
                   stream: widget.dbService.watchCombinedDreams(
-                    textQuery: _searchMode == SearchMode.text ? _searchQuery : null,
+                    textQuery: _searchMode == SearchMode.text
+                        ? _searchQuery
+                        : null,
                     activeTags: _activeTags,
                     selectedRange: _selectedDateRange,
                   ),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
-                      return const Center(child: Text('Error loading memories.'));
+                      return const Center(
+                        child: Text('Error loading memories.'),
+                      );
                     }
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator(color: AppTheme.lavender));
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: AppTheme.lavender,
+                        ),
+                      );
                     }
 
                     final dreams = snapshot.data ?? [];
                     if (dreams.isEmpty) {
-                      return _searchMode != SearchMode.none || _activeTags.isNotEmpty
-                          ? const Center(child: Text("No memories match your active filters. 🌫️"))
+                      return _searchMode != SearchMode.none ||
+                              _activeTags.isNotEmpty
+                          ? const Center(
+                              child: Text(
+                                "No memories match your active filters. 🌫️",
+                              ),
+                            )
                           : _buildEmptyState();
                     }
 
-                    return ListView.builder(
-                      itemCount: dreams.length,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      itemBuilder: (context, index) {
-                        final dream = dreams[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: FrostedGlassBox(
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.all(16),
-                              title: Text(
-                                dream.title?.isNotEmpty == true ? dream.title! : 'Unknown Dream',
-                                style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Text(
-                                  dream.content,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(color: AppTheme.lightSterlingSilver),
-                                ),
-                              ),
-                              trailing: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    '${dream.date.day}.${dream.date.month}',
-                                    style: const TextStyle(color: AppTheme.lavender, fontSize: 12),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  const Icon(Icons.chevron_right, color: AppTheme.lightSterlingSilver, size: 20),
-                                ],
-                              ),
-                              onTap: () async {
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DreamDetailScreen(
-                                      dream: dream,
-                                      dbService: widget.dbService,
-                                    ),
-                                  ),
-                                );
-                                _updateAvailableTags();
-                                setState(() {});
-                              },
+                    return DreamList(
+                      dreams: dreams,
+                      onTap: (dream) async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DreamDetailScreen(
+                              dream: dream,
+                              dbService: widget.dbService,
                             ),
                           ),
                         );
+                        _updateAvailableTags();
+                        setState(() {});
+                      },
+                      onDelete: (dream) async {
+                        await widget.dbService.deleteDream(dream.id);
+                        _updateAvailableTags();
+                        setState(() {});
                       },
                     );
                   },
@@ -236,139 +246,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           ),
         ),
       ),
+
       floatingActionButton: DreamFAB(
         onPressed: _openQuickAddScreen,
         icon: Icons.add,
-      ),
-    );
-  }
-
-  Widget _buildTagSuggestionsPanel() {
-    final filteredTags = _allAvailableTags
-        .where((tag) => tag.toLowerCase().contains(_searchQuery.toLowerCase()))
-        .toList();
-
-    if (filteredTags.isEmpty) return const SizedBox.shrink();
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: FrostedGlassBox(
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                "Tap to filter by tag:",
-                style: TextStyle(color: AppTheme.lightSterlingSilver, fontSize: 12),
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: filteredTags.map<Widget>((tag) {
-                  final isSelected = _activeTags.contains(tag);
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (isSelected) {
-                          _activeTags.remove(tag);
-                        } else {
-                          _activeTags.add(tag);
-                        }
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: isSelected ? AppTheme.burnishedGold.withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.05),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: isSelected ? AppTheme.burnishedGold : AppTheme.lavender.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      child: Text(
-                        tag,
-                        style: TextStyle(
-                          color: isSelected ? AppTheme.burnishedGold : Colors.white,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActiveFiltersRow() {
-    final List<Widget> allChips = [
-      ..._activeTags.map<Widget>((tag) {
-        return Padding(
-          padding: const EdgeInsets.only(right: 6.0),
-          child: InputChip(
-            label: Text(tag, style: const TextStyle(color: AppTheme.burnishedGold, fontSize: 12)),
-            backgroundColor: AppTheme.burnishedGold.withValues(alpha: 0.1),
-            deleteIconColor: AppTheme.burnishedGold,
-            onDeleted: () {
-              setState(() => _activeTags.remove(tag));
-            },
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            side: const BorderSide(color: AppTheme.burnishedGold, width: 0.5),
-          ),
-        );
-      }),
-      if (_selectedDateRange != null)
-        Padding(
-          padding: const EdgeInsets.only(right: 6.0),
-          child: InputChip(
-            avatar: const Icon(Icons.calendar_today, size: 12, color: AppTheme.burnishedGold),
-            label: Text(
-              _selectedDateRange!.start == _selectedDateRange!.end
-                  ? '${_selectedDateRange!.start.day}.${_selectedDateRange!.start.month}.${_selectedDateRange!.start.year}'
-                  : 'Timeline Filter',
-              style: const TextStyle(color: AppTheme.burnishedGold, fontSize: 12),
-            ),
-            backgroundColor: AppTheme.burnishedGold.withValues(alpha: 0.1),
-            deleteIconColor: AppTheme.burnishedGold,
-            onDeleted: () {
-              setState(() {
-                _selectedDateRange = null;
-              });
-            },
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            side: const BorderSide(color: AppTheme.burnishedGold, width: 0.5),
-          ),
-        ),
-    ];
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-      child: Row(
-        children: [
-          const Icon(Icons.filter_list, color: AppTheme.burnishedGold, size: 16),
-          const SizedBox(width: 8),
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: allChips,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () => setState(() {
-              _activeTags.clear();
-              _selectedDateRange = null;
-            }),
-            child: const Text("Clear", style: TextStyle(color: AppTheme.lavender, fontSize: 12)),
-          )
-        ],
       ),
     );
   }
@@ -378,7 +259,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: const [
-          Icon(Icons.nights_stay, size: 80, color: AppTheme.lightSterlingSilver),
+          Icon(
+            Icons.nights_stay,
+            size: 80,
+            color: AppTheme.lightSterlingSilver,
+          ),
           SizedBox(height: 16),
           Text(
             'Your dreamcatcher is empty.',
