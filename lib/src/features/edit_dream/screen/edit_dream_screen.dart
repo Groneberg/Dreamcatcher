@@ -10,11 +10,37 @@ class EditDreamScreen extends StatelessWidget {
   final DatabaseService dbService;
   final Dream? dreamToEdit;
 
-  const EditDreamScreen({
-    super.key, 
-    required this.dbService, 
-    this.dreamToEdit, 
-  });
+  const EditDreamScreen({super.key, required this.dbService, this.dreamToEdit});
+
+  Future<void> _handleSave(
+    BuildContext context, {
+    required String title,
+    required String content,
+    required DateTime date,
+    required int clarity,
+    required List<String> tags,
+  }) async {
+    final dream = Dream(
+      id: dreamToEdit?.id ?? 0,
+      title: title.isEmpty ? null : title,
+      content: content,
+      date: date,
+      clarityScore: clarity,
+      tags: tags,
+    );
+
+    await dbService.saveDream(dream);
+
+    if (context.mounted) {
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Changes saved in the ether... 🌙'),
+          backgroundColor: AppTheme.navyBlue,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,26 +63,14 @@ class EditDreamScreen extends StatelessWidget {
                 child: DreamForm(
                   initialDream: dreamToEdit,
                   onSave: (title, content, date, clarity, tags) async {
-                    final dream = Dream(
-                      id: dreamToEdit?.id ?? 0, 
-                      title: title.isEmpty ? null : title,
+                    await _handleSave(
+                      context,
+                      title: title,
                       content: content,
                       date: date,
-                      clarityScore: clarity,
+                      clarity: clarity,
                       tags: tags,
                     );
-
-                    await dbService.saveDream(dream);
-
-                    if (context.mounted) {
-                      Navigator.of(context).pop();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Changes saved in the ether... 🌙'),
-                          backgroundColor: AppTheme.navyBlue,
-                        ),
-                      );
-                    }
                   },
                 ),
               ),
