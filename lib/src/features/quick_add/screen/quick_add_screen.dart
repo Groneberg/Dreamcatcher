@@ -17,11 +17,11 @@ class QuickAddScreen extends StatefulWidget {
   State<QuickAddScreen> createState() => _QuickAddScreenState();
 }
 
-class _QuickAddScreenState extends State<QuickAddScreen> with SingleTickerProviderStateMixin {
+class _QuickAddScreenState extends State<QuickAddScreen>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
-  
+
   late AnimationController _shakeController;
-  late Animation<double> _shakeAnimation;
   String? _errorMessage;
   bool _isSaving = false;
   bool _isSuccess = false;
@@ -29,22 +29,12 @@ class _QuickAddScreenState extends State<QuickAddScreen> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
-    
+
     _shakeController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
 
-    _shakeAnimation = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 0.0, end: 10.0), weight: 1),
-      TweenSequenceItem(tween: Tween(begin: 10.0, end: -10.0), weight: 2),
-      TweenSequenceItem(tween: Tween(begin: -10.0, end: 10.0), weight: 2),
-      TweenSequenceItem(tween: Tween(begin: 10.0, end: 0.0), weight: 1),
-    ]).animate(CurvedAnimation(
-      parent: _shakeController,
-      curve: Curves.easeInOut,
-    ));
-    
     _controller.addListener(() {
       if (_errorMessage != null && _controller.text.isNotEmpty) {
         setState(() {
@@ -63,7 +53,7 @@ class _QuickAddScreenState extends State<QuickAddScreen> with SingleTickerProvid
 
   void _saveQuickDream() async {
     final text = _controller.text.trim();
-    
+
     if (text.isEmpty) {
       setState(() {
         _errorMessage = "A dream cannot be empty. What did you see? 🌌";
@@ -71,7 +61,7 @@ class _QuickAddScreenState extends State<QuickAddScreen> with SingleTickerProvid
       _shakeController.forward(from: 0.0);
       return;
     }
-    
+
     setState(() {
       _errorMessage = null;
       _isSaving = true;
@@ -108,11 +98,47 @@ class _QuickAddScreenState extends State<QuickAddScreen> with SingleTickerProvid
         setState(() {
           _isSaving = false;
           _isSuccess = false;
-          _errorMessage = "The mist is too thick. Could not secure the memory. 🌫️";
+          _errorMessage =
+              "The mist is too thick. Could not secure the memory. 🌫️";
         });
         _shakeController.forward(from: 0.0);
       }
     }
+  }
+
+  Widget _buildBottomActionArea(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        DreamButton(
+          label: _isSuccess
+              ? "Saved securely! 🌟"
+              : (_isSaving
+                    ? "Locking in the memory..."
+                    : "Add to Dreamcatcher"),
+          onPressed: (_isSaving || _isSuccess) ? () {} : _saveQuickDream,
+          isPrimary: !_isSuccess,
+        ),
+        const SizedBox(height: 12),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          style: TextButton.styleFrom(
+            minimumSize: const Size(double.infinity, 44),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: const Text(
+            "Cancel",
+            style: TextStyle(
+              color: AppTheme.lightSterlingSilver,
+              fontSize: 15,
+              letterSpacing: 0.3,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -120,56 +146,70 @@ class _QuickAddScreenState extends State<QuickAddScreen> with SingleTickerProvid
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: AppTheme.lightSterlingSilver),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
       body: BackgroundContainer(
         child: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight,
-                    maxHeight: constraints.maxHeight,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                          child: FrostedGlassBox(
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: GradientFocusInput(
-                                hintText: "Write it down before it fades...",
-                                controller: _controller,
-                                autofocus: true,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        DreamButton(
-                          label: _isSuccess
-                              ? "Saved securely! 🌟"
-                              : (_isSaving ? "Locking in the memory..." : "Add to Dreamcatcher"),
-                          onPressed: (_isSaving || _isSuccess) ? () {} : _saveQuickDream,
-                          isPrimary: !_isSuccess,
-                        ),
-                      ],
-                    ),
+          child: Column(
+            children: [
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 12),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppTheme.lavender.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-              );
-            },
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 24.0, top: 12.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    constraints: const BoxConstraints(),
+                    padding: EdgeInsets.zero,
+                    icon: const Icon(
+                      Icons.close,
+                      color: AppTheme.lavender,
+                      size: 28,
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 16.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      FrostedGlassBox(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: GradientFocusInput(
+                            hintText: "Write it down before it fades...",
+                            controller: _controller,
+                            autofocus: true,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 24.0,
+                  right: 24.0,
+                  bottom: 24.0,
+                ),
+                child: _buildBottomActionArea(context),
+              ),
+            ],
           ),
         ),
       ),
