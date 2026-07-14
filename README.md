@@ -3,7 +3,7 @@
 [![Flutter Version](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev)
 [![Database: ObjectBox](https://img.shields.io/badge/Database-ObjectBox-%23005A9C.svg?style=for-the-badge)](https://objectbox.io/)
 [![Platform: Mobile](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-lightgrey?style=for-the-badge)](#)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)](#license)
 
 ### Language Selection / Sprachauswahl
 🌐 **[English Version](#english)** | 🌐 **[Deutsche Version](#deutsch)**
@@ -27,12 +27,11 @@ A modern, private, and performant dream journal developed with **Flutter** and *
 
 ### 🧘 Design Philosophy: "The Silent Companion"
 
-The development follows strict psychological and practical principles to optimally support users in the fragile moment of awakening:
+The development adheres to three uncompromising pillars that define the essence of *The Silent Companion*:
 
-* **Low Sensory Input:** The "Midnight Theme" uses carefully muted colors to respect morning light sensitivity without visual noise.
-* **Anti-Gamification:** No artificial "streaks", performance pressure, or gamified rewards. Pauses in journaling are a natural part of the reflection process.
-* **Neutrality instead of Interpretation:** No automated, pre-made interpretations. The app acts as a neutral mirror to show patterns while leaving absolute sovereignty of interpretation to the user.
-* **Speed before Complexity:** Every single second counts before a dream memory fades. The user interface is heavily optimized for immediate, friction-free capture.
+* **🔒 Privacy-First – Absolute Data Sovereignty:** Every dream remains exclusively on your device. ObjectBox ensures all data persists locally without any cloud synchronization, API calls, or unauthorized data transmission. Your inner world belongs only to you.
+* **🌙 Low Sensory Input – Midnight-First Design:** The carefully calibrated "Midnight Theme" respects the fragility of dawn consciousness. Deep navy, soft lavender, and muted tones eliminate visual noise and eye strain in darkened spaces. This is design for the moment right after waking—vulnerable, sensitive, unguarded.
+* **⛔ Anti-Gamification – Natural Rhythms, No Pressure:** Zero artificial streaks, no reward metrics, no push notifications demanding consistency. Silence is sacred. Gaps in journaling are not failures—they are part of the natural human rhythm. The app simply waits, without judgment, for the next dream.
 
 ---
 
@@ -151,12 +150,11 @@ Ein modernes, privates und performantes Traumtagebuch, entwickelt mit **Flutter*
 
 ### 🧘 Design-Philosophie: "Der stille Begleiter"
 
-Die Entwicklung folgt strikten Prinzipien, um den Nutzer im sensiblen Moment des Erwachens und der Reflexion optimal zu unterstützen:
+Die Entwicklung folgt drei unerschütterlichen Säulen, die das Wesen des *Stillen Begleiters* definieren:
 
-* **Reizarmut:** Das "Midnight Theme" nutzt gedämpfte Farben, um die morgendliche Lichtempfindlichkeit zu respektieren. Keine grellen Animationen, kein visueller Lärm.
-* **Anti-Gamification:** Verzicht auf künstliche "Streaks", Leistungsdruck oder Belohnungssysteme. Pausen im Tagebuch sind Teil des Prozesses und kein Versagen.
-* **Neutralität statt Interpretation:** Die App bietet keine vorgefertigten Traumdeutungen. Sie dient als neutraler Spiegel, der Muster aufzeigt, die Deutungshoheit aber vollständig beim Nutzer belässt.
-* **Geschwindigkeit vor Komplexität:** Jede Sekunde zählt, bevor ein Traum verblasst. Das Interface ist auf schnellstmögliche Erfassung optimiert.
+* **🔒 Privacy-First – Absolute Datensouveränität:** Jeder Traum bleibt ausschließlich auf deinem Gerät. ObjectBox garantiert lokale Persistierung ohne Cloud-Synchronisierung, API-Abflüsse oder unbefugte Datenübertragung. Deine innere Welt gehört nur dir.
+* **🌙 Low Sensory Input – Midnight-First Design:** Das präzise kalibrierte "Midnight Theme" respektiert die Zerbrechlichkeit des Morgenlichts. Tiefes Marineblau, sanftes Lavendel und gedämpfte Töne eliminieren visuellen Lärm und Augenstrain im Dunkeln. Dies ist Design für den Moment direkt nach dem Aufwachen—verletzlich, empfindlich, ungeschützt.
+* **⛔ Anti-Gamification – Natürliche Rhythmen, kein Druck:** Null künstliche Streaks, keine Belohnungsmetriken, keine Push-Benachrichtigungen, die Kontinuität erzwingen. Stille ist heilig. Lücken im Tagebuch sind kein Versagen—sie sind Teil des natürlichen menschlichen Rhythmus. Die App wartet einfach, ohne Urteil, auf den nächsten Traum.
 
 ---
 
@@ -237,3 +235,47 @@ Da ObjectBox native C-Bibliotheken nutzt, überprüfe bitte folgende Parameter:
 
 * **Android:** Die `minSdkVersion` in `android/app/build.gradle` muss mindestens auf `21` stehen.
 * **iOS:** Führe vor dem Build im Terminal ein `cd ios && pod install` durch.
+
+---
+
+### 🔮 Roadmap
+
+* [x] **Quick Entry:** Sofortige Traum-Erfassung direkt nach App-Start.
+* [x] **Full-Text Search & Tag Cloud:** Reaktive Freitext-Symbolsuche kombiniert mit adaptiver Tag-Wolken-Filterung via ObjectBox-Streams.
+* [ ] **Smart Filtering:** Mehrstufiges Sortieren nach zeitlichen Abläufen (astronomische Zyklen), allgemeinen Stimmungen oder Klarheitsgraden (aktueller Fokus).
+* [ ] **Categorization Matrix:** Dedizierte Segmentierung für verschiedene Traumzustände (z.B. Klarträume, Albträume).
+* [ ] **Figma Design System:** Finalisierung expliziter architektonischer UI-Komponenten-Richtlinien.
+* [ ] **Design Refinement:** Kontinuierliche visuelle Stilaktualisierungen zur Aufrechterhaltung von Low-Sensory-Excellence.
+* [ ] **Advanced Analytics:** Interaktive, lokale Metriken zur Verfolgung von Häufigkeitskurven und Klarheitsindizes über die Zeit.
+
+---
+
+*Entwickelt als Flutter Showcase-Projekt.*
+
+---
+
+## 📜 License / Lizenz
+
+### English
+
+**Copyright © 2026. All rights reserved.** This software, its source code, design assets, and the underlying conceptual framework ("The Silent Companion") are proprietary and protected by copyright.
+
+**Restrictions on Use:**
+- **No Redistribution:** You may not redistribute, sublicense, host public mirrors, or sell this software in any form.
+- **No Re-uploading:** Publishing or re-uploading this application (including personal forks) to public app stores (Apple App Store, Google Play Store, etc.) or public repositories is strictly prohibited without explicit written permission from the copyright holder.
+- **No Unauthorized Deployment:** Deploying or hosting derivative versions is not permitted without prior written consent.
+
+For licensing inquiries or permission requests, contact the copyright holder directly.
+
+---
+
+### Deutsch
+
+**Copyright © 2026. Alle Rechte vorbehalten.** Diese Software, ihr Quellcode, ihre Design-Assets und das zugrunde liegende konzeptionelle Framework ("Der stille Begleiter") sind proprietär und urheberrechtlich geschützt.
+
+**Nutzungsbeschränkungen:**
+- **Keine Weiterverbreitung:** Es ist nicht gestattet, diese Software in irgendeiner Form weiterzuverbreiten, zu unterlizenzieren, öffentliche Mirrors zu hosten oder zu verkaufen.
+- **Kein Re-Uploading:** Das Veröffentlichen oder erneute Hochladen dieser Anwendung (einschließlich eigener Forks) in öffentliche App-Stores (Apple App Store, Google Play Store, etc.) oder öffentliche Repositories ist ohne ausdrückliche schriftliche Genehmigung des Urhebers strengstens untersagt.
+- **Keine unbefugte Bereitstellung:** Das Bereitstellen oder Hosting von abgeleiteten Versionen ist ohne vorherige schriftliche Genehmigung nicht gestattet.
+
+Für Lizenzanfragen oder Genehmigungsanträge wende dich bitte direkt an den Urheberrechtsinhaber.
