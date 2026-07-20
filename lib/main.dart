@@ -1,6 +1,5 @@
 import 'package:dreamcatcher/src/data/manager/app_state_manager.dart';
 import 'package:dreamcatcher/src/features/home/screen/home_screen.dart';
-import 'package:dreamcatcher/src/features/quick_add/screen/quick_add_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'src/theme/app_theme.dart';
@@ -43,11 +42,10 @@ class MyApp extends StatelessWidget {
               Provider.value(value: stateManager.dbService),
               Provider.value(value: stateManager.prefsService),
             ],
-            child: stateManager.shouldShowQuickAddAsRoot
-                ? const QuickAddScreen()
-                : HomeScreen(
-                    isFirstLaunch: stateManager.isFirstLaunchAtStart,
-                  ),
+            child: HomeScreen(
+              isFirstLaunch: stateManager.isFirstLaunchAtStart,
+              showQuickAddOnStart: stateManager.shouldShowQuickAddAsRoot,
+            ),
           );
         },
       ),

@@ -16,10 +16,12 @@ enum SearchMode { none, text, tag }
 
 class HomeScreen extends StatefulWidget {
   final bool isFirstLaunch;
+  final bool showQuickAddOnStart;
 
   const HomeScreen({
     super.key,
     required this.isFirstLaunch,
+    this.showQuickAddOnStart = false,
   });
 
   @override
@@ -54,6 +56,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _prefsService.setFirstLaunchCompleted();
     _updateAvailableTags();
+    if (widget.showQuickAddOnStart) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _openQuickAddScreen();
+      });
+    }
   }
 
   @override
@@ -255,22 +262,29 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                               : DreamList(
                                   dreams: dreams,
                                   onTap: (dream) async {
+                                    final db = _dbService;
+                                    final prefs = _prefsService;
+
                                     await Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => DreamDetailScreen(
-                                          dream: dream,
-                                          dbService: _dbService,
-                                        ),
+                                        builder: (modalContext) =>
+                                            MultiProvider(
+                                              providers: [
+                                                Provider.value(value: db),
+                                                Provider.value(value: prefs),
+                                              ],
+                                              child: DreamDetailScreen(
+                                                dream: dream,
+                                              ),
+                                            ),
                                       ),
                                     );
                                     _updateAvailableTags();
                                     setState(() {});
                                   },
                                   onDelete: (dream) async {
-                                    await _dbService.deleteDream(
-                                      dream.id,
-                                    );
+                                    await _dbService.deleteDream(dream.id);
                                     _updateAvailableTags();
                                     setState(() {});
                                   },

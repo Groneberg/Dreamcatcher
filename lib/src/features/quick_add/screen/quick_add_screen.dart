@@ -91,25 +91,7 @@ class _QuickAddScreenState extends State<QuickAddScreen>
         await Future.delayed(const Duration(milliseconds: 800));
 
         if (mounted) {
-          if (Navigator.of(context).canPop()) {
-            Navigator.of(context).pop();
-          } else {
-            final dbService = _dbService;
-            final prefsService = _prefsService;
-
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => MultiProvider(
-                  providers: [
-                    Provider.value(value: dbService),
-                    Provider.value(value: prefsService),
-                  ],
-                  child: const HomeScreen(isFirstLaunch: false),
-                ),
-              ),
-            );
-          }
-
+          Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Dream safely saved for later... 🌙')),
           );
@@ -211,7 +193,10 @@ class _QuickAddScreenState extends State<QuickAddScreen>
                                 Provider.value(value: dbService),
                                 Provider.value(value: prefsService),
                               ],
-                              child: const HomeScreen(isFirstLaunch: false),
+                              child: const HomeScreen(
+                                isFirstLaunch: false,
+                                showQuickAddOnStart: false,
+                              ),
                             ),
                           ),
                         );

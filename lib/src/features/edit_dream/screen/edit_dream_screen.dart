@@ -5,12 +5,12 @@ import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/features/edit_dream/widgets/dream_form.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EditDreamScreen extends StatelessWidget {
-  final DatabaseService dbService;
   final Dream? dreamToEdit;
 
-  const EditDreamScreen({super.key, required this.dbService, this.dreamToEdit});
+  const EditDreamScreen({super.key, this.dreamToEdit});
 
   Future<void> _handleSave(
     BuildContext context, {
@@ -20,6 +20,8 @@ class EditDreamScreen extends StatelessWidget {
     required int clarity,
     required List<String> tags,
   }) async {
+    final dbService = Provider.of<DatabaseService>(context, listen: false);
+
     final dream = Dream(
       id: dreamToEdit?.id ?? 0,
       title: title.isEmpty ? null : title,

@@ -1,24 +1,25 @@
 import 'package:dreamcatcher/src/common/widget/background_container.dart';
 import 'package:dreamcatcher/src/common/widget/dream_button.dart';
 import 'package:dreamcatcher/src/data/model/dream.dart';
-import 'package:dreamcatcher/src/features/dream_details/widgets/dream_detail_content.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
+import 'package:dreamcatcher/src/features/dream_details/widgets/dream_detail_content.dart';
 import 'package:dreamcatcher/src/features/edit_dream/screen/edit_dream_screen.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DreamDetailScreen extends StatelessWidget {
   final Dream dream;
-  final DatabaseService dbService;
 
   const DreamDetailScreen({
     super.key,
     required this.dream,
-    required this.dbService,
   });
 
   @override
   Widget build(BuildContext context) {
+    final dbService = Provider.of<DatabaseService>(context, listen: false);
+
     return StreamBuilder<Dream?>(
       stream: dbService.listenToDreamById(dream.id),
       builder: (context, snapshot) {
@@ -43,15 +44,19 @@ class DreamDetailScreen extends StatelessWidget {
                   color: AppTheme.burnishedGold,
                   size: 28,
                 ),
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditDreamScreen(
-                      dbService: dbService,
-                      dreamToEdit: currentDream,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (modalContext) => Provider.value(
+                        value: dbService,
+                        child: EditDreamScreen(
+                          dreamToEdit: currentDream,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
               IconButton(
                 icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
@@ -68,9 +73,11 @@ class DreamDetailScreen extends StatelessWidget {
   }
 
   void _confirmDelete(BuildContext context) {
+    final dbService = Provider.of<DatabaseService>(context, listen: false);
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         backgroundColor: AppTheme.navyBlue,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         title: const Text(
@@ -84,7 +91,7 @@ class DreamDetailScreen extends StatelessWidget {
           DreamButton(
             label: "Keep",
             isPrimary: false,
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
           ),
           const SizedBox(height: 8),
           DreamButton(
@@ -92,8 +99,8 @@ class DreamDetailScreen extends StatelessWidget {
             onPressed: () async {
               await dbService.deleteDream(dream.id);
               if (context.mounted) {
-                Navigator.of(context).pop(); // Dialog schließen
-                Navigator.of(context).pop(); // Zurück zum HomeScreen
+                Navigator.of(dialogContext).pop();
+                Navigator.of(context).pop();
               }
             },
           ),
