@@ -1,33 +1,56 @@
-import 'package:dreamcatcher/src/data/services/database_service.dart';
-import 'package:dreamcatcher/src/data/services/preferences_service.dart';
+import 'package:dreamcatcher/src/data/manager/app_state_manager.dart';
 import 'package:dreamcatcher/src/features/home/screen/home_screen.dart';
+import 'package:dreamcatcher/src/features/quick_add/screen/quick_add_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'src/theme/app_theme.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  final dbService = await DatabaseService.init();
-  final prefsService = await PreferencesService.init();
-
-  runApp(MyApp(dbService: dbService, prefsService: prefsService));
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => AppStateManager()..initializeApp(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  final DatabaseService dbService;
-  final PreferencesService prefsService;
-
-  const MyApp({super.key, required this.dbService, required this.prefsService});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'DreamCatcher',
       debugShowCheckedModeBanner: false,
-
-
       theme: AppTheme.darkTheme,
-      home: HomeScreen(dbService: dbService)
+      home: Consumer<AppStateManager>(
+        builder: (context, stateManager, child) {
+          if (!stateManager.isInitialized) {
+            return const Scaffold(
+              backgroundColor: Color(0xff0A1128),
+              body: Center(
+                child: CircularProgressIndicator(color: AppTheme.lavender),
+              ),
+            );
+          }
+
+          print("DEBUG: isFirstLaunchAtStart = ${stateManager.isFirstLaunchAtStart}");
+          print("DEBUG: shouldShowQuickAddAsRoot = ${stateManager.shouldShowQuickAddAsRoot}");
+
+          return MultiProvider(
+            providers: [
+              Provider.value(value: stateManager.dbService),
+              Provider.value(value: stateManager.prefsService),
+            ],
+            child: stateManager.shouldShowQuickAddAsRoot
+                ? const QuickAddScreen()
+                : HomeScreen(
+                    isFirstLaunch: stateManager.isFirstLaunchAtStart,
+                  ),
+          );
+        },
+      ),
     );
   }
 }

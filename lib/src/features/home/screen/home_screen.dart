@@ -2,6 +2,7 @@ import 'package:dreamcatcher/src/common/widget/background_container.dart';
 import 'package:dreamcatcher/src/common/widget/dream_fab.dart';
 import 'package:dreamcatcher/src/data/model/dream.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
+import 'package:dreamcatcher/src/data/services/preferences_service.dart';
 import 'package:dreamcatcher/src/features/dream_details/dream_detail_screen.dart';
 import 'package:dreamcatcher/src/features/home/widgets/search_filter_panel.dart';
 import 'package:dreamcatcher/src/features/home/widgets/dream_list.dart';
@@ -9,13 +10,17 @@ import 'package:dreamcatcher/src/features/home/widgets/filter_bar.dart';
 import 'package:dreamcatcher/src/features/quick_add/screen/quick_add_screen.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 enum SearchMode { none, text, tag }
 
 class HomeScreen extends StatefulWidget {
-  final DatabaseService dbService;
+  final bool isFirstLaunch;
 
-  const HomeScreen({super.key, required this.dbService});
+  const HomeScreen({
+    super.key,
+    required this.isFirstLaunch,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -31,6 +36,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   List<String> _allAvailableTags = [];
   DateTimeRange? _selectedDateRange;
 
+  DatabaseService get _dbService =>
+      Provider.of<DatabaseService>(context, listen: false);
+  PreferencesService get _prefsService =>
+      Provider.of<PreferencesService>(context, listen: false);
+
   String get _timeBasedGreeting {
     final hour = DateTime.now().hour;
     if (hour < 12) return 'Good morning. Sleep well?';
@@ -42,9 +52,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _openQuickAddScreen();
-    });
+    _prefsService.setFirstLaunchCompleted();
     _updateAvailableTags();
   }
 
@@ -57,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   void _updateAvailableTags() {
     setState(() {
-      _allAvailableTags = widget.dbService.getAllUniqueTags();
+      _allAvailableTags = _dbService.getAllUniqueTags();
     });
   }
 
@@ -65,11 +73,20 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     if (_isQuickAddOpen) return;
     _isQuickAddOpen = true;
 
+    final db = _dbService;
+    final prefs = _prefsService;
+
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => QuickAddScreen(dbService: widget.dbService),
+      builder: (modalContext) => MultiProvider(
+        providers: [
+          Provider.value(value: db),
+          Provider.value(value: prefs),
+        ],
+        child: const QuickAddScreen(),
+      ),
     );
 
     _isQuickAddOpen = false;
@@ -186,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
               Expanded(
                 child: StreamBuilder<List<Dream>>(
-                  stream: widget.dbService.watchCombinedDreams(
+                  stream: _dbService.watchCombinedDreams(
                     textQuery: _searchMode == SearchMode.text
                         ? _searchQuery
                         : null,
@@ -243,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                       MaterialPageRoute(
                                         builder: (context) => DreamDetailScreen(
                                           dream: dream,
-                                          dbService: widget.dbService,
+                                          dbService: _dbService,
                                         ),
                                       ),
                                     );
@@ -251,7 +268,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                     setState(() {});
                                   },
                                   onDelete: (dream) async {
-                                    await widget.dbService.deleteDream(
+                                    await _dbService.deleteDream(
                                       dream.id,
                                     );
                                     _updateAvailableTags();

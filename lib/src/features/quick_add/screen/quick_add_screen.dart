@@ -2,16 +2,17 @@ import 'package:dreamcatcher/src/common/widget/background_container.dart';
 import 'package:dreamcatcher/src/common/widget/dream_button.dart';
 import 'package:dreamcatcher/src/common/widget/frosted_glass_box.dart';
 import 'package:dreamcatcher/src/common/widget/gradient_focus_input.dart';
+import 'package:dreamcatcher/src/data/services/preferences_service.dart';
+import 'package:dreamcatcher/src/features/home/screen/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:dreamcatcher/src/data/model/dream.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 
 class QuickAddScreen extends StatefulWidget {
-  final DatabaseService dbService;
-
-  const QuickAddScreen({super.key, required this.dbService});
+  const QuickAddScreen({super.key});
 
   @override
   State<QuickAddScreen> createState() => _QuickAddScreenState();
@@ -20,6 +21,11 @@ class QuickAddScreen extends StatefulWidget {
 class _QuickAddScreenState extends State<QuickAddScreen>
     with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
+
+  DatabaseService get _dbService =>
+      Provider.of<DatabaseService>(context, listen: false);
+  PreferencesService get _prefsService =>
+      Provider.of<PreferencesService>(context, listen: false);
 
   late AnimationController _shakeController;
   String? _errorMessage;
@@ -74,7 +80,7 @@ class _QuickAddScreenState extends State<QuickAddScreen>
         clarityScore: 3,
       );
 
-      await widget.dbService.saveDream(newDream);
+      await _dbService.saveDream(newDream);
 
       if (mounted) {
         setState(() {
@@ -85,7 +91,25 @@ class _QuickAddScreenState extends State<QuickAddScreen>
         await Future.delayed(const Duration(milliseconds: 800));
 
         if (mounted) {
-          Navigator.pop(context);
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          } else {
+            final dbService = _dbService;
+            final prefsService = _prefsService;
+
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => MultiProvider(
+                  providers: [
+                    Provider.value(value: dbService),
+                    Provider.value(value: prefsService),
+                  ],
+                  child: const HomeScreen(isFirstLaunch: false),
+                ),
+              ),
+            );
+          }
+
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Dream safely saved for later... 🌙')),
           );
@@ -173,7 +197,26 @@ class _QuickAddScreenState extends State<QuickAddScreen>
                       color: AppTheme.lavender,
                       size: 28,
                     ),
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () {
+                      if (Navigator.of(context).canPop()) {
+                        Navigator.of(context).pop();
+                      } else {
+                        final dbService = _dbService;
+                        final prefsService = _prefsService;
+
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => MultiProvider(
+                              providers: [
+                                Provider.value(value: dbService),
+                                Provider.value(value: prefsService),
+                              ],
+                              child: const HomeScreen(isFirstLaunch: false),
+                            ),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ),
               ),
