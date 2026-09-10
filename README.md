@@ -3,46 +3,48 @@
 [![Flutter Version](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev)
 [![Database: ObjectBox](https://img.shields.io/badge/Database-ObjectBox-%23005A9C.svg?style=for-the-badge)](https://objectbox.io/)
 [![Platform: Mobile](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-lightgrey?style=for-the-badge)](#)
-[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)](#license)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)](#-license--lizenz)
 
 ### Language Selection / Sprachauswahl
-🌐 **[English Version](#english)** | 🌐 **[Deutsche Version](#deutsch)**
+🌐 **[English Version](#english)** | 🌐 **[Deutsche Version](#deutsche-version)**
 
 ---
 
 ## English
 
-A modern, private, and performant dream journal developed with **Flutter** and **ObjectBox**. This app allows users to quickly capture, rate, and analyze their dreams. The entire ecosystem is designed with an offline-first architecture to guarantee absolute data sovereignty and privacy.
+A modern, private, and performant dream journal built with **Flutter** and **ObjectBox**. DreamCatcher acts as a *"Silent Companion"*, designed to protect your sleep hygiene and mental peace in the vulnerable moment of waking. The entire ecosystem is built upon an uncompromising offline-first architecture to guarantee absolute data sovereignty, minimal sensory intrusion, and zero-pressure reflection.
 
 ### 📌 Table of Contents
-1. [🧘 Design Philosophy](#-design-philosophy-the-silent-companion)
+1. [🧘 Design Philosophy: "The Silent Companion"](#-design-philosophy-the-silent-companion)
 2. [✨ Features (MVP)](#-features-mvp)
 3. [🎨 UI Design & Color Palette](#-ui-design--color-palette)
-4. [🛠️ Tech Stack](#%EF%B8%8F-tech-stack)
+4. [🛠️ Tech Stack & Architecture](#%EF%B8%8F-tech-stack--architecture)
 5. [🚀 Installation & Setup](#-installation--setup)
 6. [🔧 Troubleshooting](#-troubleshooting)
 7. [🔮 Roadmap](#-roadmap)
+8. [📜 License](#-license--lizenz)
 
 ---
 
 ### 🧘 Design Philosophy: "The Silent Companion"
 
-The development adheres to three uncompromising pillars that define the essence of *The Silent Companion*:
+The development adheres to four uncompromising pillars that define the essence of *The Silent Companion*:
 
-* **🔒 Privacy-First – Absolute Data Sovereignty:** Every dream remains exclusively on your device. ObjectBox ensures all data persists locally without any cloud synchronization, API calls, or unauthorized data transmission. Your inner world belongs only to you.
-* **🌙 Low Sensory Input – Midnight-First Design:** The carefully calibrated "Midnight Theme" respects the fragility of dawn consciousness. Deep navy, soft lavender, and muted tones eliminate visual noise and eye strain in darkened spaces. This is design for the moment right after waking—vulnerable, sensitive, unguarded.
-* **⛔ Anti-Gamification – Natural Rhythms, No Pressure:** Zero artificial streaks, no reward metrics, no push notifications demanding consistency. Silence is sacred. Gaps in journaling are not failures—they are part of the natural human rhythm. The app simply waits, without judgment, for the next dream.
+* **🔒 Privacy-First – Absolute Data Sovereignty:** Every dream remains strictly on your device. ObjectBox ensures all data persists locally in transactional storage without any cloud synchronization, external tracking, or unauthorized background transmission. Your inner world belongs solely to you.
+* **🌙 Hypnopompic-Optimized – Low Sensory Input:** Specifically calibrated for dawn consciousness and sleep inertia. The deep "Midnight Theme" eliminates visual clutter, prevents eye strain in darkened rooms, and avoids morning cortisol spikes. Design for the vulnerable moment right after waking.
+* **⛔ Anti-Gamification – Natural Rhythms, No Pressure:** Zero artificial streaks, no reward metrics, and no push notifications demanding consistency. Gaps in journaling are not failures—they are an authentic part of the natural human cycle. The app simply waits, without judgment, for the next dream.
+* **🪞 Neutral Mirror – Reflection Over Interpretation:** No intrusive generative AI images that distort authentic dream imagery through cognitive interference, and no esoteric symbol dictionaries. The app strictly separates effortless morning capture from later evening reflection, keeping interpretation authority entirely with you.
 
 ---
 
 ### ✨ Features (MVP)
 
-* **Seamless Dream Capture:** Save titles, contents, dates, emotional tags, and clarity level (1–5 stars).
-* **Local-First Persistence:** Secure, lightning-fast on-device storage using **ObjectBox**.
-* **Full CRUD Operations:** Effortlessly create, read, update, and delete journal entries.
-* **Unified Adaptive Search Architecture:** A single, transformable search field that fluidly handles both full-text symbol searches (Magnifier) and reactive tag cloud filtering (Tag Icon) in real-time.
-* **Reactive & Smart UI:** Smooth swipe-to-delete behavior accompanied by an instant undo function and reactive list updates via reactive streams.
-* **Night-Optimized Layout:** Tailored Dark Mode interface ("Midnight Theme") designed for low-light environments.
+* **⚡ Cold-Start Capture Mode (Speed-to-Entry):** Immediate dream drafting right upon app initialization to capture fleeting dream memories before they fade.
+* **🔮 Glassmorphism UI System:** Translucent frosted glass components (`FrostedGlassBox`), dynamic backdrop blur filters, and illuminated focal interactions (`DreamFAB` with gold glow).
+* **🔍 Unified Adaptive Search Architecture:** A single, transformable search interface that fluidly handles both full-text symbol search and reactive tag cloud filtering in real time.
+* **💾 Local-First Persistence & Reactivity:** High-performance, transactional on-device storage using **ObjectBox** with reactive streams for immediate UI updates.
+* **✍️ Full CRUD Operations & Safe States:** Create, view, edit, and delete dream entries effortlessly, complete with swipe-to-delete gestures and instant undo functionality.
+* **🌌 Midnight Theme & Night-Optimized Layout:** Tailored Dark Mode interface designed for low-light morning ergonomics.
 
 ---
 
@@ -53,18 +55,19 @@ To support the calming, nocturnal atmosphere, the interface strictly adheres to 
 | Visual Accent | Color Name | Hex Code | Purpose & Application |
 | :--- | :--- | :--- | :--- |
 | 🌌 **Base Background** | Navy Blue | `#0A1128` | The base of the night sky, minimizing eye strain. |
-| 🔮 **Surface / Cards** | Deep Purple | `#1B1464` | Adds structural depth for interactive elements and buttons. |
+| 🔮 **Surface / Cards** | Deep Purple | `#1B1464` | Adds structural depth for interactive elements and frosted surfaces. |
 | 🪻 **Primary Typography**| Lavender | `#E0B0FF` | Soft, elegant contrast for readable texts and primary icons. |
-| 👑 **Highlights** | Burnished Gold | `#D4AF37` | Reserved for crucial focal points, interactive ratings, and actions. |
-| 🥈 **Secondary Info** | Sterling Silver| `#C0C0C0` | Subtle accents and less prominent meta-information. |
+| 👑 **Highlights** | Burnished Gold | `#D4AF37` | Reserved for focal points, interactive ratings, and primary actions (`DreamFAB`). |
+| 🥈 **Secondary Info** | Sterling Silver| `#C0C0C0` | Subtle accents, borders, and less prominent meta-information. |
 
 ---
 
-### 🛠️ Tech Stack
+### 🛠️ Tech Stack & Architecture
 
 * **Framework:** Flutter (Cross-Platform Mobile UI Ecosystem)
-* **Local Database:** [ObjectBox](https://objectbox.io/) (High-performance, transactional NoSQL on-device database)
+* **Local Database:** [ObjectBox](https://objectbox.io/) (High-performance, transactional NoSQL on-device database with reactive streams)
 * **Code Generation:** Dart `build_runner` for generating type-safe compiled database mappings
+* **Architecture Pattern:** Modular Feature-First structure (`lib/src/features/`, `data/`, and `common_widgets/`)
 
 ---
 
@@ -75,54 +78,57 @@ Ensure you have the Flutter SDK installed on your system before proceeding.
 #### 1. Fetch Dependencies
 ```bash
 flutter pub get
-
 ```
 
 #### 2. Trigger Code Generation
-
 ObjectBox requires pre-generated database code to map your entities. Run the builder with the conflict-cleanup flag:
-
 ```bash
-flutter pub run build_runner build --delete-conflicting-outputs
-
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 #### 3. Launch the Application
-
 ```bash
 flutter run
-
 ```
 
 ---
 
 ### 🔧 Troubleshooting
 
-If the code generation stage fails due to altered entity schemas, force a clean build cache by executing:
-
+If the code generation stage fails due to altered entity schemas, force a clean build cache:
 ```bash
-flutter pub run build_runner clean
+flutter clean
 flutter pub get
-flutter pub run build_runner build --delete-conflicting-outputs
-
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 ObjectBox requires native compilation support. Ensure your deployment targets match these baselines:
-
-* **Android:** `minSdkVersion 21` (or higher) in your `android/app/build.gradle`.
+* **Android:** `minSdkVersion 21` (or higher) in `android/app/build.gradle`.
 * **iOS:** Run `pod install` within the `ios/` directory before building.
 
 ---
 
 ### 🔮 Roadmap
 
-* [x] **Quick Entry:** Immediate dream drafting right upon app initialization.
-* [x] **Full-Text Search & Tag Cloud:** Reactive full-text symbol search paired with an atmospheric, on-demand tag filtering overlay using combined ObjectBox streams.
-* [ ] **Smart Filtering:** Multi-layered sorting based on chronological timelines (astronomical cycles), general moods, or lucidity scales (Current Focus).
-* [ ] **Categorization Matrix:** Dedicated segmentation for distinct dream states (e.g., Lucid Dreams, Nightmares).
-* [ ] **Figma Design System:** Finalizing explicit architectural UI component guidelines.
-* [ ] **Design Refinement:** Continuous visual styling updates to maintain low-sensory excellence.
-* [ ] **Advanced Analytics:** Interactive, local-first metrics tracing frequency curves and clarity indexes over time.
+#### Phase 1: Foundation & Core Capture (MVP – Completed)
+* [x] **Quick Entry & Capture Mode:** Instant capture of dream notes directly upon app launch.
+* [x] **Local Persistence & Reactivity:** Transactional on-device storage using ObjectBox and reactive streams.
+* [x] **Adaptive Search & Tag Cloud:** Combined full-text and reactive tag-filtering in real time.
+* [x] **Glassmorphism UI:** Translucent midnight design system featuring frosted glass cards and gold accents.
+
+#### Phase 2: Hypnopompic Capture & Screen-Free Workflows (Current Focus)
+* [ ] **On-Device Voice-to-Text:** Offline voice dictation for recording dreams immediately upon waking without typing.
+* [ ] **Context Factors (Previous Day Tags):** Optional tracking of waking-life influences (e.g., stress level, workouts).
+
+#### Phase 3: Trust, Security & Data Sovereignty
+* [ ] **Device Migration & Backup Restore (1-Click):** Seamless backup and restore of dream data when switching to a new smartphone or from an older device.
+* [ ] **Biometric Lock:** Optional private journal protection using PIN, Face ID, or fingerprint authentication.
+* [ ] **Structured Data Export (PDF/CSV):** Local report generation formatted for dream therapy, psychotherapy, and sleep clinics.
+* [ ] **Presentation Mode:** Clean, enlarged view for reading individual dreams aloud without revealing private metadata.
+
+#### Phase 4: Gentle Insight & Reflection (Post-MVP)
+* [ ] **Hindsight Layer:** Adding reflective annotations to past dreams from a present-day perspective.
+* [ ] **Emotional Aura (Weathering):** Data-driven ambient color gradients instead of disruptive generative AI artwork.
 
 ---
 
@@ -134,38 +140,39 @@ ObjectBox requires native compilation support. Ensure your deployment targets ma
 
 ## Deutsche Version
 
-Ein modernes, privates und performantes Traumtagebuch, entwickelt mit **Flutter** und **ObjectBox**. Diese App ermöglicht es Nutzern, ihre Träume schnell zu erfassen, zu bewerten und zu analysieren. Der Fokus liegt konsequent auf absoluter Datensouveränität (Offline-First) und einem reizarmen Dark-Mode-Design.
+Ein modernes, privates und hochperformantes Traumtagebuch, entwickelt mit **Flutter** und **ObjectBox**. DreamCatcher fungiert als „stiller Begleiter“, der darauf ausgelegt ist, die Schlafhygiene und die mentale Ruhe des Nutzers im vulnerablen Moment des Erwachens zu schützen. Die gesamte Architektur setzt auf kompromisslose Datensouveränität (100 % On-Device), maximale Reizarmut und druckfreie Reflexion.
 
 ### 📌 Inhaltsverzeichnis
-
-1. [🧘 Design-Philosophie](https://www.google.com/search?q=%23-design-philosophie-der-stille-begleiter)
-2. [✨ Features (MVP)](https://www.google.com/search?q=%23-features-mvp-1)
-3. [🎨 UI-Design & Farbpalette](https://www.google.com/search?q=%23-ui-design--farbpalette)
-4. [🛠️ Technologie-Stack](https://www.google.com/search?q=%23%25EF%25B8%258F-technologie-stack)
-5. [🚀 Installation & Setup](https://www.google.com/search?q=%23-installation--setup-1)
-6. [🔧 Fehlerbehebung (Troubleshooting)](https://www.google.com/search?q=%23-fehlerbehebung-troubleshooting)
-7. [🔮 Roadmap](https://www.google.com/search?q=%23-roadmap-1)
+1. [🧘 Design-Philosophie: „Der stille Begleiter“](#-design-philosophie-der-stille-begleiter)
+2. [✨ Features (MVP)](#-features-mvp-1)
+3. [🎨 UI-Design & Farbpalette](#-ui-design--farbpalette-1)
+4. [🛠️ Technologie-Stack & Architektur](#%EF%B8%8F-technologie-stack--architektur)
+5. [🚀 Installation & Setup](#-installation--setup-1)
+6. [🔧 Fehlerbehebung (Troubleshooting)](#-fehlerbehebung-troubleshooting)
+7. [🔮 Roadmap](#-roadmap-1)
+8. [📜 Lizenz](#-license--lizenz)
 
 ---
 
-### 🧘 Design-Philosophie: "Der stille Begleiter"
+### 🧘 Design-Philosophie: „Der stille Begleiter“
 
-Die Entwicklung folgt drei unerschütterlichen Säulen, die das Wesen des *Stillen Begleiters* definieren:
+Die Entwicklung folgt vier unerschütterlichen Säulen, die das Wesen des *Stillen Begleiters* definieren:
 
-* **🔒 Privacy-First – Absolute Datensouveränität:** Jeder Traum bleibt ausschließlich auf deinem Gerät. ObjectBox garantiert lokale Persistierung ohne Cloud-Synchronisierung, API-Abflüsse oder unbefugte Datenübertragung. Deine innere Welt gehört nur dir.
-* **🌙 Low Sensory Input – Midnight-First Design:** Das präzise kalibrierte "Midnight Theme" respektiert die Zerbrechlichkeit des Morgenlichts. Tiefes Marineblau, sanftes Lavendel und gedämpfte Töne eliminieren visuellen Lärm und Augenstrain im Dunkeln. Dies ist Design für den Moment direkt nach dem Aufwachen—verletzlich, empfindlich, ungeschützt.
-* **⛔ Anti-Gamification – Natürliche Rhythmen, kein Druck:** Null künstliche Streaks, keine Belohnungsmetriken, keine Push-Benachrichtigungen, die Kontinuität erzwingen. Stille ist heilig. Lücken im Tagebuch sind kein Versagen—sie sind Teil des natürlichen menschlichen Rhythmus. Die App wartet einfach, ohne Urteil, auf den nächsten Traum.
+* **🔒 Privacy-First – Absolute Datensouveränität:** Jeder Traum bleibt ausschließlich auf deinem Gerät. ObjectBox garantiert lokale Persistierung in transaktionalem Speicher ohne Cloud-Synchronisierung, Tracking oder unbefugte Datenübertragung. Deine innere Welt gehört nur dir.
+* **🌙 Hypnopomp-Optimiert – Reizarmut (Low Sensory Input):** Entwickelt für den Zustand der Schlaftrunkenheit direkt nach dem Aufwachen. Das tiefdunkle „Midnight Theme“ eliminiert visuelles Rauschen, schont lichtempfindliche Augen im Dunkeln und vermeidet morgendlichen Cortisol-Stress.
+* **⛔ Anti-Gamification – Natürliche Rhythmen, kein Druck:** Null künstliche Streaks, keine Belohnungsmetriken und keine fordernden Push-Benachrichtigungen. Lücken im Tagebuch sind kein Versagen – sie sind Teil des natürlichen menschlichen Rhythmus. Die App wartet ohne Wertung auf den nächsten Traum.
+* **🪞 Neutraler Spiegel – Reflexion statt Deutungshoheit:** Keine verfälschenden generativen KI-Bilder, die das eigene fragile Traumgedächtnis überschreiben, und keine esoterischen Symbollexika. Die App trennt das morgendliche, intuitive Sammeln (Auffangmodus) strikt von der späteren Reflexion.
 
 ---
 
 ### ✨ Features (MVP)
 
-* **Intuitive Traum-Erfassung:** Sichern von Titel, Inhalt, Datum, Tags und der Klarheit (1–5 Sterne).
-* **Lokale Persistenz:** Blitzschnelle, Offline-First Speicherung mittels **ObjectBox** direkt auf dem Gerät.
-* **Vollständige CRUD-Operationen:** Problemloses Erstellen, Lesen, Bearbeiten und Löschen von Einträgen.
-* **Kombinierte adaptive Such-Architektur:** Ein einziges, sich dynamisch anpassendes Eingabefeld, das sowohl die Freitext-Symbolsuche (Lupe) als auch eine reaktive Tag-Wolken-Filterung (Tag-Icon) in Echtzeit verarbeitet.
-* **Smartes UI-Handling:** Reaktives Swipe-to-Delete mit direkter Undo-Funktion und automatischen Listen-Updates via Streams.
-* **Nacht-optimiertes Interface:** Speziell angepasster Dark Mode ("Midnight Theme") für die blendfreie Nutzung im Dunkeln.
+* **⚡ Kaltstart-Auffangmodus (Speed-to-Entry):** Blitzschnelle Erfassung flüchtiger Traumfragmente direkt beim App-Start, bevor die Traumerinnerung verblasst.
+* **🔮 Glassmorphism UI-System:** Atmosphärische Frosted-Glass-Karten (`FrostedGlassBox`), flüssige Backdrop-Filter, immersiver Nachthimmel und akzentuierte Interaktionselemente (`DreamFAB` mit goldenem Glow).
+* **🔍 Kombinierte adaptive Such-Architektur:** Ein einziges transformierbares Eingabefeld, das Freitext-Symbolsuche und reaktive Tag-Wolken-Filterung in Echtzeit vereint.
+* **💾 Lokale Persistenz & Reaktivität:** Transaktionssichere, blitzschnelle Datenspeicherung via **ObjectBox** mit reaktiven Datenströmen (Streams) für sofortige UI-Aktualisierungen.
+* **✍️ Vollständige CRUD-Operationen & Undo:** Problemloses Erstellen, Lesen, Bearbeiten und Löschen von Einträgen inklusive Swipe-to-Delete und Undo-Funktion.
+* **🌌 Nacht-optimiertes Interface:** Speziell angepasster Dark Mode („Midnight Theme“) für die blendfreie Nutzung im Dunkeln.
 
 ---
 
@@ -174,20 +181,21 @@ Die Entwicklung folgt drei unerschütterlichen Säulen, die das Wesen des *Still
 Um eine beruhigende, nächtliche Atmosphäre zu gewährleisten, nutzt das Interface eine präzise abgestimmte Farbverteilung:
 
 | Visueller Akzent | Farbname | Hex-Code | Funktion & Anwendung |
-| --- | --- | --- | --- |
+| :--- | :--- | :--- | :--- |
 | 🌌 **Hintergrund** | Navy Blue | `#0A1128` | Basis des Nachthimmels. Schont die Augen am frühen Morgen. |
-| 🔮 **Karten & Buttons** | Deep Purple | `#1B1464` | Schafft Tiefe und visuelle Struktur für interaktive Elemente. |
+| 🔮 **Karten & Flächen** | Deep Purple | `#1B1464` | Schafft Tiefe und visuelle Struktur für Frosted-Glass-Elemente. |
 | 🪻 **Primärtext** | Lavender | `#E0B0FF` | Sanfter, kontrastreicher Ton für Texte und primäre Icons. |
-| 👑 **Highlights** | Burnished Gold | `#D4AF37` | Akzente für wichtige Aktionen, Core-Interaktionen und Bewertungen. |
-| 🥈 **Sekundäre Info** | Sterling Silver | `#C0C0C0` | Dezente Einfärbung für Meta-Informationen und Ränder. |
+| 👑 **Highlights** | Burnished Gold | `#D4AF37` | Akzente für Core-Interaktionen, Bewertungen und den `DreamFAB`. |
+| 🥈 **Sekundäre Info** | Sterling Silver | `#C0C0C0` | Dezente Einfärbung für Ränder, Trennlinien und Meta-Informationen. |
 
 ---
 
-### 🛠️ Technologie-Stack
+### 🛠️ Technologie-Stack & Architektur
 
 * **Framework:** Flutter (Plattformübergreifende native App-Entwicklung)
-* **Datenbank:** [ObjectBox](https://objectbox.io/) (Superschnelle, transaktionale NoSQL-On-Device-Datenbank)
-* **Code Generation:** Dart `build_runner` für kompilierte, typsichere Datenbankabfragen
+* **Lokale Datenbank:** [ObjectBox](https://objectbox.io/) (Transaktionale NoSQL On-Device-Datenbank mit reaktiven Streams)
+* **Code Generation:** Dart `build_runner` für kompilierte, typsichere Entity-Bindeglieder
+* **Architektur:** Modulare Feature-First-Struktur (`lib/src/features/`, `data/` und `common_widgets/`)
 
 ---
 
@@ -196,43 +204,33 @@ Um eine beruhigende, nächtliche Atmosphäre zu gewährleisten, nutzt das Interf
 Stelle sicher, dass das Flutter SDK auf deinem System einsatzbereit ist.
 
 #### 1. Abhängigkeiten installieren
-
 ```bash
 flutter pub get
-
 ```
 
 #### 2. Datenbank-Modelle generieren
-
 ObjectBox benötigt generierten Code für die Validierung der Entities. Führe den Build-Runner mit automatischer Konfliktbereinigung aus:
-
 ```bash
-flutter pub run build_runner build --delete-conflicting-outputs
-
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 #### 3. Anwendung starten
-
 ```bash
 flutter run
-
 ```
 
 ---
 
 ### 🔧 Fehlerbehebung (Troubleshooting)
 
-Solltest du Änderungen an den Entities vorgenommen haben und der Build fehlschlagen, hilft ein radikaler Clean des Build-Caches:
-
+Solltest du Änderungen an den Entities vorgenommen haben und der Build fehlschlagen, hilft ein Clean des Build-Caches:
 ```bash
-flutter pub run build_runner clean
+flutter clean
 flutter pub get
-flutter pub run build_runner build --delete-conflicting-outputs
-
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 Da ObjectBox native C-Bibliotheken nutzt, überprüfe bitte folgende Parameter:
-
 * **Android:** Die `minSdkVersion` in `android/app/build.gradle` muss mindestens auf `21` stehen.
 * **iOS:** Führe vor dem Build im Terminal ein `cd ios && pod install` durch.
 
@@ -240,13 +238,25 @@ Da ObjectBox native C-Bibliotheken nutzt, überprüfe bitte folgende Parameter:
 
 ### 🔮 Roadmap
 
-* [x] **Quick Entry:** Sofortige Traum-Erfassung direkt nach App-Start.
-* [x] **Full-Text Search & Tag Cloud:** Reaktive Freitext-Symbolsuche kombiniert mit adaptiver Tag-Wolken-Filterung via ObjectBox-Streams.
-* [ ] **Smart Filtering:** Mehrstufiges Sortieren nach zeitlichen Abläufen (astronomische Zyklen), allgemeinen Stimmungen oder Klarheitsgraden (aktueller Fokus).
-* [ ] **Categorization Matrix:** Dedizierte Segmentierung für verschiedene Traumzustände (z.B. Klarträume, Albträume).
-* [ ] **Figma Design System:** Finalisierung expliziter architektonischer UI-Komponenten-Richtlinien.
-* [ ] **Design Refinement:** Kontinuierliche visuelle Stilaktualisierungen zur Aufrechterhaltung von Low-Sensory-Excellence.
-* [ ] **Advanced Analytics:** Interaktive, lokale Metriken zur Verfolgung von Häufigkeitskurven und Klarheitsindizes über die Zeit.
+#### Phase 1: Fundament & Kern-Erfassung (MVP – Abgeschlossen)
+* [x] **Quick Entry & Auffangmodus:** Sofortiges Erfassen von Trauminhalten direkt beim App-Start.
+* [x] **Lokale Persistenz & Reaktivität:** Transaktionssichere On-Device-Speicherung via ObjectBox und reaktive Streams.
+* [x] **Adaptive Volltextsuche & Tag-Cloud:** Kombinierte Freitext- und Tag-Filterung in Echtzeit.
+* [x] **Glassmorphism-UI:** Transluzentes Midnight-Design mit Frosted-Glass-Karten und Gold-Akzenten.
+
+#### Phase 2: Hypnopompe Erfassung & Screen-Free Workflows (Aktueller Fokus)
+* [ ] **On-Device Voice-to-Text:** Lokale, offlinefähige Spracherkennung für verschlafenes Einsprechen ohne Display-Tippen.
+* [ ] **Kontext-Faktoren (Vortags-Tags):** Leichtes Erfassen von Einflussfaktoren (z. B. Stresslevel, Sport, Genussmittel).
+
+#### Phase 3: Vertrauen, Sicherheit & Daten-Souveränität
+* [ ] **Geräteumzug & Backup-Restore (1-Klick):** Nahtlose Sicherung und Wiederherstellung der Traumdaten beim Wechsel auf ein neues Smartphone oder von einem Altgerät.
+* [ ] **Biometrischer Zugriffsschutz:** Optionale Absicherung des Journals via PIN, Face ID oder Fingerabdruck.
+* [ ] **Strukturierter Datenexport (PDF/CSV):** Lokale Berichterstellung für Traumtherapie, Psychotherapie und Schlaflabore.
+* [ ] **Präsentations-Modus:** Großformatiges, sicheres Vorlesen/Zeigen einzelner Träume ohne Freigabe privater Metadaten.
+
+#### Phase 4: Sanfte Erkenntnis & Reflexion (Post-MVP)
+* [ ] **Hindsight-Layer (Spätere Reflexion):** Nachträgliches Kommentieren alter Träume aus heutiger Sicht („Was wurde daraus?“).
+* [ ] **Emotionales Wetterleuchten / Aura:** Datenbasierte Farbverläufe und Stimmungs-Auren statt verfälschender KI-Bilder.
 
 ---
 
@@ -279,3 +289,4 @@ For licensing inquiries or permission requests, contact the copyright holder dir
 - **Keine unbefugte Bereitstellung:** Das Bereitstellen oder Hosting von abgeleiteten Versionen ist ohne vorherige schriftliche Genehmigung nicht gestattet.
 
 Für Lizenzanfragen oder Genehmigungsanträge wende dich bitte direkt an den Urheberrechtsinhaber.
+
