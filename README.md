@@ -117,14 +117,15 @@ ObjectBox requires native compilation support. Ensure your deployment targets ma
 * [x] **Glassmorphism UI:** Translucent midnight design system featuring frosted glass cards and gold accents.
 
 #### Phase 2: Hypnopompic Capture & Screen-Free Workflows (Current Focus)
+* [ ] **Device Migration & Backup Restore (1-Click):** Seamless backup and restore of dream data when switching to a new smartphone or from an older device.
+* [ ] **Structured Data Export (PDF/CSV):** Local report generation formatted for dream therapy, psychotherapy, and sleep clinics.
+
+#### Phase 3: Trust, Security & Data Sovereignty
+* [ ] **Biometric Lock:** Optional private journal protection using PIN, Face ID, or fingerprint authentication.
+* [ ] **Presentation Mode:** Clean, enlarged view for reading individual dreams aloud without revealing private metadata.
 * [ ] **On-Device Voice-to-Text:** Offline voice dictation for recording dreams immediately upon waking without typing.
 * [ ] **Context Factors (Previous Day Tags):** Optional tracking of waking-life influences (e.g., stress level, workouts).
 
-#### Phase 3: Trust, Security & Data Sovereignty
-* [ ] **Device Migration & Backup Restore (1-Click):** Seamless backup and restore of dream data when switching to a new smartphone or from an older device.
-* [ ] **Biometric Lock:** Optional private journal protection using PIN, Face ID, or fingerprint authentication.
-* [ ] **Structured Data Export (PDF/CSV):** Local report generation formatted for dream therapy, psychotherapy, and sleep clinics.
-* [ ] **Presentation Mode:** Clean, enlarged view for reading individual dreams aloud without revealing private metadata.
 
 #### Phase 4: Gentle Insight & Reflection (Post-MVP)
 * [ ] **Hindsight Layer:** Adding reflective annotations to past dreams from a present-day perspective.
@@ -245,13 +246,13 @@ Da ObjectBox native C-Bibliotheken nutzt, überprüfe bitte folgende Parameter:
 * [x] **Glassmorphism-UI:** Transluzentes Midnight-Design mit Frosted-Glass-Karten und Gold-Akzenten.
 
 #### Phase 2: Hypnopompe Erfassung & Screen-Free Workflows (Aktueller Fokus)
-* [ ] **On-Device Voice-to-Text:** Lokale, offlinefähige Spracherkennung für verschlafenes Einsprechen ohne Display-Tippen.
-* [ ] **Kontext-Faktoren (Vortags-Tags):** Leichtes Erfassen von Einflussfaktoren (z. B. Stresslevel, Sport, Genussmittel).
+* [ ] **Geräteumzug & Backup-Restore (1-Klick):** Nahtlose Sicherung und Wiederherstellung der Traumdaten beim Wechsel auf ein neues Smartphone oder von einem Altgerät.
+* [ ] **Strukturierter Datenexport (PDF/CSV):** Lokale Berichterstellung für Traumtherapie, Psychotherapie und Schlaflabore.
 
 #### Phase 3: Vertrauen, Sicherheit & Daten-Souveränität
-* [ ] **Geräteumzug & Backup-Restore (1-Klick):** Nahtlose Sicherung und Wiederherstellung der Traumdaten beim Wechsel auf ein neues Smartphone oder von einem Altgerät.
 * [ ] **Biometrischer Zugriffsschutz:** Optionale Absicherung des Journals via PIN, Face ID oder Fingerabdruck.
-* [ ] **Strukturierter Datenexport (PDF/CSV):** Lokale Berichterstellung für Traumtherapie, Psychotherapie und Schlaflabore.
+* [ ] **On-Device Voice-to-Text:** Lokale, offlinefähige Spracherkennung für verschlafenes Einsprechen ohne Display-Tippen.
+* [ ] **Kontext-Faktoren (Vortags-Tags):** Leichtes Erfassen von Einflussfaktoren (z. B. Stresslevel, Sport, Genussmittel).
 * [ ] **Präsentations-Modus:** Großformatiges, sicheres Vorlesen/Zeigen einzelner Träume ohne Freigabe privater Metadaten.
 
 #### Phase 4: Sanfte Erkenntnis & Reflexion (Post-MVP)
