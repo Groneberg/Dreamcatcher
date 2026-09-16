@@ -1,4 +1,5 @@
 import 'package:dreamcatcher/src/data/manager/app_state_manager.dart';
+import 'package:dreamcatcher/src/data/services/export/export_service.dart';
 import 'package:dreamcatcher/src/features/home/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -41,6 +42,10 @@ class MyApp extends StatelessWidget {
             providers: [
               Provider.value(value: stateManager.dbService),
               Provider.value(value: stateManager.prefsService),
+              // Phase 3: ExportService global bereitstellen
+              Provider<ExportService>(
+                create: (_) => ExportService(stateManager.dbService),
+              ),
             ],
             child: HomeScreen(
               isFirstLaunch: stateManager.isFirstLaunchAtStart,
