@@ -8,6 +8,7 @@ import 'package:dreamcatcher/src/features/home/widgets/search_filter_panel.dart'
 import 'package:dreamcatcher/src/features/home/widgets/dream_list.dart';
 import 'package:dreamcatcher/src/features/home/widgets/filter_bar.dart';
 import 'package:dreamcatcher/src/features/quick_add/screen/quick_add_screen.dart';
+import 'package:dreamcatcher/src/features/settings/screen/settings_screen.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -162,6 +163,17 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               onPressed: () {
                 _updateAvailableTags();
                 setState(() => _searchMode = SearchMode.tag);
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.settings_outlined, color: AppTheme.lavender),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SettingsScreen(dbService: _dbService),
+                  ),
+                );
               },
             ),
           ] else
