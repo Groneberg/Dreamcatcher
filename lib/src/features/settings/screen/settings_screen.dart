@@ -4,9 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:dreamcatcher/src/common/widget/background_container.dart';
 import 'package:dreamcatcher/src/common/widget/frosted_glass_box.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
-import 'package:dreamcatcher/src/data/services/export/export_service.dart';
-import 'package:dreamcatcher/src/data/services/export/formatters/json_dream_exporter.dart';
 import 'package:dreamcatcher/src/data/services/import/import_service.dart';
+import 'package:dreamcatcher/src/features/settings/widgets/export_selection_sheet.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -16,57 +15,6 @@ class SettingsScreen extends StatelessWidget {
     super.key,
     required this.dbService,
   });
-
-  Future<void> _handleExport(BuildContext context) async {
-    final exportService = context.read<ExportService>();
-
-    // Position des Buttons für das iPadOS-Popover ermitteln
-    final renderBox = context.findRenderObject() as RenderBox?;
-    final origin = renderBox != null
-        ? renderBox.localToGlobal(Offset.zero) & renderBox.size
-        : null;
-
-    try {
-      await exportService.exportDreams(
-        exporter: JsonDreamExporter(),
-        sharePositionOrigin: origin,
-      );
-    } catch (e) {
-      if (!context.mounted) return;
-
-      final message = e.toString().contains('No dreams')
-          ? 'No memories to export yet. 🌌'
-          : 'Could not export memories. Please try again.';
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: BorderSide(
-              color: AppTheme.lavender.withValues(alpha: 0.2),
-              width: 1,
-            ),
-          ),
-          elevation: 4,
-          backgroundColor: const Color(0xFF3B1E2B),
-          content: Row(
-            children: [
-              const Icon(Icons.info_outline, color: Colors.white70),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  message,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-  }
 
   Future<void> _handleImport(BuildContext context) async {
     final result = await context.read<ImportService>().pickAndImportJson();
@@ -174,7 +122,14 @@ class SettingsScreen extends StatelessWidget {
                         child: _buildActionTile(
                           icon: Icons.upload_file_outlined,
                           label: 'Export',
-                          onTap: () => _handleExport(context),
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (modalContext) => const ExportSelectionSheet(),
+                            );
+                          },
                         ),
                       ),
                       Container(
