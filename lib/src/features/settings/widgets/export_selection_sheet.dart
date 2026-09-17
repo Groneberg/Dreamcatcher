@@ -8,7 +8,7 @@ import 'package:dreamcatcher/src/theme/app_theme.dart';
 class ExportSelectionSheet extends StatelessWidget {
   const ExportSelectionSheet({super.key});
 
-  Future<void> _runExport(BuildContext context) async {
+  Future<void> _runJsonExport(BuildContext context) async {
     final exportService = context.read<ExportService>();
 
     final renderBox = context.findRenderObject() as RenderBox?;
@@ -60,6 +60,38 @@ class ExportSelectionSheet extends StatelessWidget {
     }
   }
 
+  void _showComingSoon(BuildContext context, String formatName) {
+    Navigator.of(context).pop();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: AppTheme.lavender.withValues(alpha: 0.2),
+            width: 1,
+          ),
+        ),
+        elevation: 4,
+        backgroundColor: AppTheme.deepPurple.withValues(alpha: 0.9),
+        content: Row(
+          children: [
+            const Icon(Icons.hourglass_empty, color: AppTheme.burnishedGold),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                '$formatName export is coming soon! ✨',
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -103,11 +135,39 @@ class ExportSelectionSheet extends StatelessWidget {
                 ),
               ),
             ),
+            // Voll funktional
             _buildOptionTile(
               icon: Icons.data_object,
               title: 'JSON Backup',
               description: 'Full uncompressed archive for restoration',
-              onTap: () => _runExport(context),
+              onTap: () => _runJsonExport(context),
+            ),
+            const SizedBox(height: 10),
+            // Platzhalter: PDF
+            _buildOptionTile(
+              icon: Icons.picture_as_pdf_outlined,
+              title: 'PDF Document',
+              description: 'Formatted reading & therapy report',
+              badgeText: 'Coming Soon',
+              onTap: () => _showComingSoon(context, 'PDF Document'),
+            ),
+            const SizedBox(height: 10),
+            // Platzhalter: Markdown
+            _buildOptionTile(
+              icon: Icons.text_snippet_outlined,
+              title: 'Markdown Archive',
+              description: 'Compatible with Obsidian, Logseq & Bear',
+              badgeText: 'Coming Soon',
+              onTap: () => _showComingSoon(context, 'Markdown'),
+            ),
+            const SizedBox(height: 10),
+            // Platzhalter: CSV
+            _buildOptionTile(
+              icon: Icons.table_chart_outlined,
+              title: 'CSV Sheet',
+              description: 'For spreadsheets and metric analysis',
+              badgeText: 'Coming Soon',
+              onTap: () => _showComingSoon(context, 'CSV'),
             ),
             const SizedBox(height: 8),
           ],
@@ -121,6 +181,7 @@ class ExportSelectionSheet extends StatelessWidget {
     required String title,
     required String description,
     required VoidCallback onTap,
+    String? badgeText,
   }) {
     return InkWell(
       borderRadius: BorderRadius.circular(16),
@@ -150,13 +211,38 @@ class ExportSelectionSheet extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      if (badgeText != null) ...[
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppTheme.lavender.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            badgeText,
+                            style: const TextStyle(
+                              color: AppTheme.lavender,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                   const SizedBox(height: 2),
                   Text(
