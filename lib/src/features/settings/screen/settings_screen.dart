@@ -40,8 +40,29 @@ class SettingsScreen extends StatelessWidget {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(message),
-          backgroundColor: AppTheme.navyBlue,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(
+              color: AppTheme.lavender.withValues(alpha: 0.2),
+              width: 1,
+            ),
+          ),
+          elevation: 4,
+          backgroundColor: const Color(0xFF3B1E2B),
+          content: Row(
+            children: [
+              const Icon(Icons.info_outline, color: Colors.white70),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  message,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -55,15 +76,57 @@ class SettingsScreen extends StatelessWidget {
     if (result.isSuccess) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Restored ${result.importedCount} memories successfully! 🌟'),
-          backgroundColor: AppTheme.deepPurple,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(
+              color: AppTheme.lavender.withValues(alpha: 0.2),
+              width: 1,
+            ),
+          ),
+          elevation: 4,
+          backgroundColor: AppTheme.deepPurple.withValues(alpha: 0.9),
+          content: Row(
+            children: [
+              Icon(Icons.check_circle_outline, color: AppTheme.burnishedGold),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Restored ${result.importedCount} memories successfully! 🌟',
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     } else if (result.errorMessage != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result.errorMessage!),
-          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(
+              color: AppTheme.lavender.withValues(alpha: 0.2),
+              width: 1,
+            ),
+          ),
+          elevation: 4,
+          backgroundColor: const Color(0xFF3B1E2B),
+          content: Row(
+            children: [
+              const Icon(Icons.info_outline, color: Colors.white70),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  result.errorMessage!,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
