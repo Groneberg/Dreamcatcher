@@ -6,6 +6,7 @@ import 'package:dreamcatcher/src/common/widget/frosted_glass_box.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/data/services/export/export_service.dart';
 import 'package:dreamcatcher/src/data/services/export/formatters/json_dream_exporter.dart';
+import 'package:dreamcatcher/src/data/services/import/import_service.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -41,6 +42,28 @@ class SettingsScreen extends StatelessWidget {
         SnackBar(
           content: Text(message),
           backgroundColor: AppTheme.navyBlue,
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleImport(BuildContext context) async {
+    final result = await context.read<ImportService>().pickAndImportJson();
+
+    if (!context.mounted) return;
+
+    if (result.isSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Restored ${result.importedCount} memories successfully! 🌟'),
+          backgroundColor: AppTheme.deepPurple,
+        ),
+      );
+    } else if (result.errorMessage != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result.errorMessage!),
+          backgroundColor: Colors.redAccent,
         ),
       );
     }
@@ -101,15 +124,7 @@ class SettingsScreen extends StatelessWidget {
                         child: _buildActionTile(
                           icon: Icons.download_for_offline_outlined,
                           label: 'Import',
-                          onTap: () {
-                            // Bleibt vorbereitet für Phase 4 (Import-Picker)
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Import options coming soon...'),
-                                backgroundColor: AppTheme.navyBlue,
-                              ),
-                            );
-                          },
+                          onTap: () => _handleImport(context),
                         ),
                       ),
                     ],

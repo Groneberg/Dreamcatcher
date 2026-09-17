@@ -1,5 +1,6 @@
 import 'package:dreamcatcher/src/data/manager/app_state_manager.dart';
 import 'package:dreamcatcher/src/data/services/export/export_service.dart';
+import 'package:dreamcatcher/src/data/services/import/import_service.dart';
 import 'package:dreamcatcher/src/features/home/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -40,6 +41,9 @@ class MyApp extends StatelessWidget {
             Provider.value(value: stateManager.prefsService),
             Provider<ExportService>(
               create: (_) => ExportService(stateManager.dbService),
+            ),
+            Provider<ImportService>(
+              create: (_) => ImportService(stateManager.dbService),
             ),
           ],
           child: MaterialApp(
