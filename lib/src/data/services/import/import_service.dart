@@ -49,8 +49,7 @@ class ImportService {
 
       for (final entry in rawEntries) {
         if (entry is Map<String, dynamic>) {
-          // preserveId = false garantiert neue IDs und verhindert Überschreiben lokaler Einträge
-          final dream = Dream.fromJson(entry, preserveId: false);
+          final dream = Dream.fromJson(entry, preserveId: true);
           if (dream.content.trim().isNotEmpty) {
             dreamsToSave.add(dream);
           } else {
@@ -66,6 +65,8 @@ class ImportService {
           'No valid dream memories found in backup.',
         );
       }
+
+      await dbService.clearAllDreams();
 
       for (final dream in dreamsToSave) {
         await dbService.saveDream(dream);

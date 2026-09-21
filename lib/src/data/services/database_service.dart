@@ -26,6 +26,8 @@ class DatabaseService {
     _dreamBox.put(dream);
   }
 
+  Future<void> clearAllDreams() async => _dreamBox.removeAll();
+
   Future<void> deleteDream(int id) async {
     _dreamBox.remove(id);
     log("Dream with id $id deleted from database.");

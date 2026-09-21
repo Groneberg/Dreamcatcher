@@ -17,12 +17,73 @@ class SettingsScreen extends StatelessWidget {
   });
 
   Future<void> _handleImport(BuildContext context) async {
-    final result = await context.read<ImportService>().pickAndImportJson();
+    final rootContext = context;
+    final importService = rootContext.read<ImportService>();
 
-    if (!context.mounted) return;
+    final dialogResult = await showDialog<String>(
+      context: rootContext,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: AppTheme.navyBlue,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: AppTheme.lavender.withValues(alpha: 0.2),
+          ),
+        ),
+        title: const Text(
+          'Restore Backup?',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: const Text(
+          'This will permanently replace your current journal with the backup data. We recommend exporting your current state first.',
+          style: TextStyle(color: AppTheme.lightSterlingSilver),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, 'cancel'),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: AppTheme.lightSterlingSilver),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, 'export'),
+            child: const Text(
+              'Export First',
+              style: TextStyle(color: AppTheme.burnishedGold),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, 'overwrite'),
+            child: const Text(
+              'Overwrite',
+              style: TextStyle(color: Colors.redAccent),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (dialogResult == 'export') {
+      if (!rootContext.mounted) return;
+      showModalBottomSheet(
+        context: rootContext,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (modalContext) => const ExportSelectionSheet(),
+      );
+      return;
+    }
+
+    if (dialogResult != 'overwrite') return;
+
+    final result = await importService.pickAndImportJson();
+
+    if (!rootContext.mounted) return;
 
     if (result.isSuccess) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(rootContext).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -50,7 +111,7 @@ class SettingsScreen extends StatelessWidget {
         ),
       );
     } else if (result.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(rootContext).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
