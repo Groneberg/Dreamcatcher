@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:dreamcatcher/src/data/services/export/export_service.dart';
 import 'package:dreamcatcher/src/data/services/export/formatters/json_dream_exporter.dart';
+import 'package:dreamcatcher/src/data/services/export/formatters/pdf_dream_exporter.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 
 class ExportSelectionSheet extends StatelessWidget {
@@ -21,6 +22,58 @@ class ExportSelectionSheet extends StatelessWidget {
     try {
       await exportService.exportDreams(
         exporter: JsonDreamExporter(),
+        sharePositionOrigin: origin,
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+
+      final message = e.toString().contains('No dreams')
+          ? 'No memories to export yet. 🌌'
+          : 'Could not export memories. Please try again.';
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(
+              color: AppTheme.lavender.withValues(alpha: 0.2),
+              width: 1,
+            ),
+          ),
+          elevation: 4,
+          backgroundColor: const Color(0xFF3B1E2B),
+          content: Row(
+            children: [
+              const Icon(Icons.info_outline, color: Colors.white70),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  message,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _runPdfExport(BuildContext context) async {
+    final exportService = context.read<ExportService>();
+
+    final renderBox = context.findRenderObject() as RenderBox?;
+    final origin = renderBox != null
+        ? renderBox.localToGlobal(Offset.zero) & renderBox.size
+        : null;
+
+    Navigator.of(context).pop();
+
+    try {
+      await exportService.exportDreams(
+        exporter: PdfDreamExporter(),
         sharePositionOrigin: origin,
       );
     } catch (e) {
@@ -143,13 +196,11 @@ class ExportSelectionSheet extends StatelessWidget {
               onTap: () => _runJsonExport(context),
             ),
             const SizedBox(height: 10),
-            // Platzhalter: PDF
             _buildOptionTile(
               icon: Icons.picture_as_pdf_outlined,
               title: 'PDF Document',
               description: 'Formatted reading & therapy report',
-              badgeText: 'Coming Soon',
-              onTap: () => _showComingSoon(context, 'PDF Document'),
+              onTap: () => _runPdfExport(context),
             ),
             const SizedBox(height: 10),
             // Platzhalter: Markdown
