@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:dreamcatcher/src/data/services/export/export_service.dart';
+import 'package:dreamcatcher/src/data/services/export/formatters/csv_dream_exporter.dart';
 import 'package:dreamcatcher/src/data/services/export/formatters/json_dream_exporter.dart';
 import 'package:dreamcatcher/src/data/services/export/formatters/markdown_dream_exporter.dart';
 import 'package:dreamcatcher/src/data/services/export/formatters/pdf_dream_exporter.dart';
@@ -32,33 +33,7 @@ class ExportSelectionSheet extends StatelessWidget {
           ? 'No memories to export yet. 🌌'
           : 'Could not export memories. Please try again.';
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: BorderSide(
-              color: AppTheme.lavender.withValues(alpha: 0.2),
-              width: 1,
-            ),
-          ),
-          elevation: 4,
-          backgroundColor: const Color(0xFF3B1E2B),
-          content: Row(
-            children: [
-              const Icon(Icons.info_outline, color: Colors.white70),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  message,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+      _showErrorSnackBar(context, message);
     }
   }
 
@@ -84,33 +59,7 @@ class ExportSelectionSheet extends StatelessWidget {
           ? 'No memories to export yet. 🌌'
           : 'Could not export memories. Please try again.';
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: BorderSide(
-              color: AppTheme.lavender.withValues(alpha: 0.2),
-              width: 1,
-            ),
-          ),
-          elevation: 4,
-          backgroundColor: const Color(0xFF3B1E2B),
-          content: Row(
-            children: [
-              const Icon(Icons.info_outline, color: Colors.white70),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  message,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+      _showErrorSnackBar(context, message);
     }
   }
 
@@ -136,39 +85,37 @@ class ExportSelectionSheet extends StatelessWidget {
           ? 'No memories to export yet. 🌌'
           : 'Could not export memories. Please try again.';
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: BorderSide(
-              color: AppTheme.lavender.withValues(alpha: 0.2),
-              width: 1,
-            ),
-          ),
-          elevation: 4,
-          backgroundColor: const Color(0xFF3B1E2B),
-          content: Row(
-            children: [
-              const Icon(Icons.info_outline, color: Colors.white70),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  message,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+      _showErrorSnackBar(context, message);
     }
   }
 
-  void _showComingSoon(BuildContext context, String formatName) {
+  Future<void> _runCsvExport(BuildContext context) async {
+    final exportService = context.read<ExportService>();
+
+    final renderBox = context.findRenderObject() as RenderBox?;
+    final origin = renderBox != null
+        ? renderBox.localToGlobal(Offset.zero) & renderBox.size
+        : null;
+
     Navigator.of(context).pop();
 
+    try {
+      await exportService.exportDreams(
+        exporter: CsvDreamExporter(),
+        sharePositionOrigin: origin,
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+
+      final message = e.toString().contains('No dreams')
+          ? 'No memories to export yet. 🌌'
+          : 'Could not export memories. Please try again.';
+
+      _showErrorSnackBar(context, message);
+    }
+  }
+
+  void _showErrorSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
@@ -181,14 +128,14 @@ class ExportSelectionSheet extends StatelessWidget {
           ),
         ),
         elevation: 4,
-        backgroundColor: AppTheme.deepPurple.withValues(alpha: 0.9),
+        backgroundColor: const Color(0xFF3B1E2B),
         content: Row(
           children: [
-            const Icon(Icons.hourglass_empty, color: AppTheme.burnishedGold),
+            const Icon(Icons.info_outline, color: Colors.white70),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                '$formatName export is coming soon! ✨',
+                message,
                 style: const TextStyle(color: Colors.white),
               ),
             ),
@@ -241,7 +188,6 @@ class ExportSelectionSheet extends StatelessWidget {
                 ),
               ),
             ),
-            // Voll funktional
             _buildOptionTile(
               icon: Icons.data_object,
               title: 'JSON Backup',
@@ -263,13 +209,11 @@ class ExportSelectionSheet extends StatelessWidget {
               onTap: () => _runMarkdownExport(context),
             ),
             const SizedBox(height: 10),
-            // Platzhalter: CSV
             _buildOptionTile(
               icon: Icons.table_chart_outlined,
               title: 'CSV Sheet',
               description: 'For spreadsheets and metric analysis',
-              badgeText: 'Coming Soon',
-              onTap: () => _showComingSoon(context, 'CSV'),
+              onTap: () => _runCsvExport(context),
             ),
             const SizedBox(height: 8),
           ],
@@ -283,7 +227,6 @@ class ExportSelectionSheet extends StatelessWidget {
     required String title,
     required String description,
     required VoidCallback onTap,
-    String? badgeText,
   }) {
     return InkWell(
       borderRadius: BorderRadius.circular(16),
@@ -313,38 +256,13 @@ class ExportSelectionSheet extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      if (badgeText != null) ...[
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppTheme.lavender.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: Text(
-                            badgeText,
-                            style: const TextStyle(
-                              color: AppTheme.lavender,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   const SizedBox(height: 2),
                   Text(

@@ -19,6 +19,7 @@ dependencies:
   file_picker: ^8.1.0
   intl: ^0.20.2
   pdf: ^3.11.3
+  csv: ^6.0.0
 
 dev_dependencies:
   flutter_test:
