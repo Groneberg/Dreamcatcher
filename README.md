@@ -116,11 +116,13 @@ ObjectBox requires native compilation support. Ensure your deployment targets ma
 * [x] **Adaptive Search & Tag Cloud:** Combined full-text and reactive tag-filtering in real time.
 * [x] **Glassmorphism UI:** Translucent midnight design system featuring frosted glass cards and gold accents.
 
-#### Phase 2: Hypnopompic Capture & Screen-Free Workflows (Current Focus)
-* [ ] **Device Migration & Backup Restore (1-Click):** Seamless backup and restore of dream data when switching to a new smartphone or from an older device.
-* [ ] **Structured Data Export (PDF/CSV):** Local report generation formatted for dream therapy, psychotherapy, and sleep clinics.
+#### Phase 2: Data Sovereignty & Localization (Current Focus)
+* [x] **Device Migration & Backup Restore (1-Click):** Clean state restoration with ID preservation from JSON archives, secured by a safety-first confirmation dialog.
+* [x] **Multi-Format Export Suite (JSON, PDF, Markdown, CSV):** Modular strategy-based export pipeline utilizing native OS share sheets and iPadOS popover handling.
+* [ ] **Multi-Language Support (Localization / i18n):** Decoupled language architecture with type-safe string provisioning for multilingual UI support (English & German).
 
-#### Phase 3: Trust, Security & Data Sovereignty
+#### Phase 3: Trust, Security & Advanced Workflows
+* [ ] **Refined PDF Export Styling:** Visual overhaul and customized Midnight/print styling for therapy and clinical reports.
 * [ ] **Biometric Lock:** Optional private journal protection using PIN, Face ID, or fingerprint authentication.
 * [ ] **Presentation Mode:** Clean, enlarged view for reading individual dreams aloud without revealing private metadata.
 * [ ] **On-Device Voice-to-Text:** Offline voice dictation for recording dreams immediately upon waking without typing.
@@ -245,15 +247,17 @@ Da ObjectBox native C-Bibliotheken nutzt, überprüfe bitte folgende Parameter:
 * [x] **Adaptive Volltextsuche & Tag-Cloud:** Kombinierte Freitext- und Tag-Filterung in Echtzeit.
 * [x] **Glassmorphism-UI:** Transluzentes Midnight-Design mit Frosted-Glass-Karten und Gold-Akzenten.
 
-#### Phase 2: Hypnopompe Erfassung & Screen-Free Workflows (Aktueller Fokus)
-* [ ] **Geräteumzug & Backup-Restore (1-Klick):** Nahtlose Sicherung und Wiederherstellung der Traumdaten beim Wechsel auf ein neues Smartphone oder von einem Altgerät.
-* [ ] **Strukturierter Datenexport (PDF/CSV):** Lokale Berichterstellung für Traumtherapie, Psychotherapie und Schlaflabore.
+#### Phase 2: Datensouveränität & Lokalisierung (Aktueller Fokus)
+* [x] **Geräteumzug & Backup-Restore (1-Klick):** Vollständige Wiederherstellung des Archivzustands inklusive historischer IDs aus JSON-Backups, abgesichert durch dreistufigen Warndialog.
+* [x] **Multi-Format Export-Suite (JSON, PDF, Markdown, CSV):** Modulare Export-Pipeline über das native System-Share-Sheet inklusive iPadOS-Popover-Absicherung.
+* [ ] **Mehrsprachigkeit (Lokalisierung / i18n):** Entkoppelte Sprach-Architektur mit typsicherer String-Bereitstellung für mehrsprachige Menüs und Ansichten (Deutsch & Englisch).
 
-#### Phase 3: Vertrauen, Sicherheit & Daten-Souveränität
+#### Phase 3: Vertrauen, Sicherheit & Erweiterte Workflows
+* [ ] **Überarbeitetes PDF-Export-Design:** Visuelle Veredelung und optimiertes Print-/Midnight-Layout für Therapie- und Klinikberichte.
 * [ ] **Biometrischer Zugriffsschutz:** Optionale Absicherung des Journals via PIN, Face ID oder Fingerabdruck.
+* [ ] **Präsentations-Modus:** Großformatiges, sicheres Vorlesen/Zeigen einzelner Träume ohne Freigabe privater Metadaten.
 * [ ] **On-Device Voice-to-Text:** Lokale, offlinefähige Spracherkennung für verschlafenes Einsprechen ohne Display-Tippen.
 * [ ] **Kontext-Faktoren (Vortags-Tags):** Leichtes Erfassen von Einflussfaktoren (z. B. Stresslevel, Sport, Genussmittel).
-* [ ] **Präsentations-Modus:** Großformatiges, sicheres Vorlesen/Zeigen einzelner Träume ohne Freigabe privater Metadaten.
 
 #### Phase 4: Sanfte Erkenntnis & Reflexion (Post-MVP)
 * [ ] **Hindsight-Layer (Spätere Reflexion):** Nachträgliches Kommentieren alter Träume aus heutiger Sicht („Was wurde daraus?“).
