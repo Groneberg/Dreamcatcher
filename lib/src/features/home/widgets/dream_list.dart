@@ -1,7 +1,9 @@
 import 'package:dreamcatcher/src/common/widget/frosted_glass_box.dart';
 import 'package:dreamcatcher/src/data/model/dream.dart';
+import 'package:dreamcatcher/src/language/language_service.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 typedef DreamCallback = void Function(Dream dream);
 
@@ -21,6 +23,8 @@ class DreamList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final strings = context.watch<LanguageService>().homeStrings;
+
     return ListView.builder(
       itemCount: dreams.length,
       padding: padding,
@@ -47,7 +51,7 @@ class DreamList extends StatelessWidget {
                 title: Text(
                   dream.title?.isNotEmpty == true
                       ? dream.title!
-                      : 'Unknown Dream',
+                      : strings.unknownDreamTitle,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,

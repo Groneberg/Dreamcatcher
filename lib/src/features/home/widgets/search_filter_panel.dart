@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:dreamcatcher/src/common/widget/frosted_glass_box.dart';
+import 'package:dreamcatcher/src/language/language_service.dart';
 
 class SearchFilterPanel extends StatelessWidget {
   final DateTimeRange? selectedRange;
@@ -63,6 +65,8 @@ class SearchFilterPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final strings = context.watch<LanguageService>().homeStrings;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
       child: FrostedGlassBox(
@@ -72,9 +76,9 @@ class SearchFilterPanel extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Filter by Timeline',
-                style: TextStyle(
+              Text(
+                strings.timelineFilterTitle,
+                style: const TextStyle(
                   color: AppTheme.lavender,
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
@@ -87,29 +91,29 @@ class SearchFilterPanel extends StatelessWidget {
                 runSpacing: 8.0,
                 children: [
                   _PresetChip(
-                    label: 'Last Night',
+                    label: strings.presetLastNight,
                     onPressed: () => _applyPreset(1),
                   ),
                   _PresetChip(
-                    label: '7 Days',
+                    label: strings.presetSevenDays,
                     onPressed: () => _applyPreset(7),
                   ),
                   _PresetChip(
-                    label: '30 Days',
+                    label: strings.presetThirtyDays,
                     onPressed: () => _applyPreset(30),
                   ),
                   // Custom Date Range Picker Trigger
                   ActionChip(
                     backgroundColor: AppTheme.deepPurple,
                     avatar: Icon(
-                      Icons.calendar_month, 
-                      size: 16, 
-                      color: selectedRange != null ? AppTheme.burnishedGold : AppTheme.sterlingSilver
+                      Icons.calendar_month,
+                      size: 16,
+                      color: selectedRange != null ? AppTheme.burnishedGold : AppTheme.sterlingSilver,
                     ),
                     label: Text(
-                      selectedRange != null ? 'Custom Active' : 'Select Range...',
+                      selectedRange != null ? strings.customRangeActive : strings.selectRange,
                       style: TextStyle(
-                        color: selectedRange != null ? AppTheme.burnishedGold : AppTheme.sterlingSilver
+                        color: selectedRange != null ? AppTheme.burnishedGold : AppTheme.sterlingSilver,
                       ),
                     ),
                     onPressed: () => _selectCustomRange(context),

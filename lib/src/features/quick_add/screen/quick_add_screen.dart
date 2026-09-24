@@ -4,6 +4,7 @@ import 'package:dreamcatcher/src/common/widget/frosted_glass_box.dart';
 import 'package:dreamcatcher/src/common/widget/gradient_focus_input.dart';
 import 'package:dreamcatcher/src/data/services/preferences_service.dart';
 import 'package:dreamcatcher/src/features/home/screen/home_screen.dart';
+import 'package:dreamcatcher/src/language/language_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -58,11 +59,12 @@ class _QuickAddScreenState extends State<QuickAddScreen>
   }
 
   void _saveQuickDream() async {
+    final strings = context.read<LanguageService>().quickAddStrings;
     final text = _controller.text.trim();
 
     if (text.isEmpty) {
       setState(() {
-        _errorMessage = "A dream cannot be empty. What did you see? 🌌";
+        _errorMessage = strings.emptyDreamError;
       });
       _shakeController.forward(from: 0.0);
       return;
@@ -93,7 +95,7 @@ class _QuickAddScreenState extends State<QuickAddScreen>
         if (mounted) {
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Dream safely saved for later... 🌙')),
+            SnackBar(content: Text(strings.snackBarSaved)),
           );
         }
       }
@@ -104,8 +106,7 @@ class _QuickAddScreenState extends State<QuickAddScreen>
         setState(() {
           _isSaving = false;
           _isSuccess = false;
-          _errorMessage =
-              "The mist is too thick. Could not secure the memory. 🌫️";
+          _errorMessage = strings.saveError;
         });
         _shakeController.forward(from: 0.0);
       }
@@ -113,15 +114,17 @@ class _QuickAddScreenState extends State<QuickAddScreen>
   }
 
   Widget _buildBottomActionArea(BuildContext context) {
+    final strings = context.watch<LanguageService>().quickAddStrings;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         DreamButton(
           label: _isSuccess
-              ? "Saved securely! 🌟"
+              ? strings.buttonSaved
               : (_isSaving
-                    ? "Locking in the memory..."
-                    : "Add to Dreamcatcher"),
+                    ? strings.buttonSaving
+                    : strings.buttonAdd),
           onPressed: (_isSaving || _isSuccess) ? () {} : _saveQuickDream,
           isPrimary: !_isSuccess,
         ),
@@ -134,9 +137,9 @@ class _QuickAddScreenState extends State<QuickAddScreen>
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          child: const Text(
-            "Cancel",
-            style: TextStyle(
+          child: Text(
+            strings.buttonCancel,
+            style: const TextStyle(
               color: AppTheme.lightSterlingSilver,
               fontSize: 15,
               letterSpacing: 0.3,
@@ -149,6 +152,8 @@ class _QuickAddScreenState extends State<QuickAddScreen>
 
   @override
   Widget build(BuildContext context) {
+    final strings = context.watch<LanguageService>().quickAddStrings;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.transparent,
@@ -219,7 +224,7 @@ class _QuickAddScreenState extends State<QuickAddScreen>
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: GradientFocusInput(
-                            hintText: "Write it down before it fades...",
+                            hintText: strings.inputHint,
                             controller: _controller,
                             autofocus: true,
                           ),

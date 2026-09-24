@@ -1,6 +1,9 @@
 import 'package:dreamcatcher/src/common/widget/frosted_glass_box.dart';
+import 'package:dreamcatcher/src/language/language_service.dart';
+import 'package:dreamcatcher/src/language/strings/home_strings.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FilterBar extends StatelessWidget {
   final bool showTagSuggestions;
@@ -28,16 +31,18 @@ class FilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final strings = context.watch<LanguageService>().homeStrings;
+
     return Column(
       children: [
-        if (showTagSuggestions) _buildTagSuggestionsPanel(),
+        if (showTagSuggestions) _buildTagSuggestionsPanel(strings),
         if (activeTags.isNotEmpty || selectedRange != null)
-          _buildActiveFiltersRow(),
+          _buildActiveFiltersRow(strings),
       ],
     );
   }
 
-  Widget _buildTagSuggestionsPanel() {
+  Widget _buildTagSuggestionsPanel(HomeStrings strings) {
     final filteredTags = allAvailableTags
         .where((tag) => tag.toLowerCase().contains(searchQuery.toLowerCase()))
         .toList();
@@ -53,9 +58,9 @@ class FilterBar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                "Tap to filter by tag:",
-                style: TextStyle(
+              Text(
+                strings.tagFilterHint,
+                style: const TextStyle(
                   color: AppTheme.lightSterlingSilver,
                   fontSize: 12,
                 ),
@@ -104,7 +109,7 @@ class FilterBar extends StatelessWidget {
     );
   }
 
-  Widget _buildActiveFiltersRow() {
+  Widget _buildActiveFiltersRow(HomeStrings strings) {
     final List<Widget> allChips = [
       ...activeTags.map<Widget>((tag) {
         return Padding(
@@ -139,7 +144,7 @@ class FilterBar extends StatelessWidget {
             label: Text(
               selectedRange!.start == selectedRange!.end
                   ? '${selectedRange!.start.day}.${selectedRange!.start.month}.${selectedRange!.start.year}'
-                  : 'Timeline Filter',
+                  : strings.timelineFilterChip,
               style: const TextStyle(
                 color: AppTheme.burnishedGold,
                 fontSize: 12,
@@ -174,9 +179,9 @@ class FilterBar extends StatelessWidget {
           ),
           TextButton(
             onPressed: onClear,
-            child: const Text(
-              "Clear",
-              style: TextStyle(color: AppTheme.lavender, fontSize: 12),
+            child: Text(
+              strings.clearFilters,
+              style: const TextStyle(color: AppTheme.lavender, fontSize: 12),
             ),
           ),
         ],

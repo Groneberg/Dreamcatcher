@@ -27,4 +27,34 @@ class HomeStringsEn implements HomeStrings {
 
   @override
   String get emptyStateSubtitle => 'Every dream finds a safe place here.';
+
+  @override
+  String get unknownDreamTitle => 'Unknown Dream';
+
+  @override
+  String get tagFilterHint => 'Tap to filter by tag:';
+
+  @override
+  String get timelineFilterChip => 'Timeline Filter';
+
+  @override
+  String get clearFilters => 'Clear';
+
+  @override
+  String get timelineFilterTitle => 'Filter by Timeline';
+
+  @override
+  String get presetLastNight => 'Last Night';
+
+  @override
+  String get presetSevenDays => '7 Days';
+
+  @override
+  String get presetThirtyDays => '30 Days';
+
+  @override
+  String get customRangeActive => 'Custom Active';
+
+  @override
+  String get selectRange => 'Select Range...';
 }
