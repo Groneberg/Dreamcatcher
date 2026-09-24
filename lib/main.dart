@@ -40,7 +40,9 @@ class MyApp extends StatelessWidget {
           providers: [
             Provider.value(value: stateManager.dbService),
             Provider.value(value: stateManager.prefsService),
-            Provider<LanguageService>(create: (_) => LanguageService()),
+            ChangeNotifierProvider<LanguageService>(
+              create: (_) => LanguageService(stateManager.prefsService),
+            ),
             Provider<ExportService>(
               create: (_) => ExportService(stateManager.dbService),
             ),
