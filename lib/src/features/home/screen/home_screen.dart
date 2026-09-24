@@ -9,6 +9,8 @@ import 'package:dreamcatcher/src/features/home/widgets/dream_list.dart';
 import 'package:dreamcatcher/src/features/home/widgets/filter_bar.dart';
 import 'package:dreamcatcher/src/features/quick_add/screen/quick_add_screen.dart';
 import 'package:dreamcatcher/src/features/settings/screen/settings_screen.dart';
+import 'package:dreamcatcher/src/language/language_service.dart';
+import 'package:dreamcatcher/src/language/strings/home_strings.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -44,11 +46,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   PreferencesService get _prefsService =>
       Provider.of<PreferencesService>(context, listen: false);
 
-  String get _timeBasedGreeting {
+  String _timeBasedGreeting(HomeStrings strings) {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good morning. Sleep well?';
-    if (hour < 18) return 'Welcome back.';
-    return 'The night is here. Any dreams?';
+    if (hour < 12) return strings.greetingMorning;
+    if (hour < 18) return strings.greetingAfternoon;
+    return strings.greetingNight;
   }
 
   @override
@@ -104,12 +106,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final homeStrings = Provider.of<LanguageService>(context).homeStrings;
     Widget appBarTitle;
     Widget? appBarPrefix;
 
     if (_searchMode == SearchMode.none) {
       appBarTitle = Text(
-        _timeBasedGreeting,
+        _timeBasedGreeting(homeStrings),
         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
       );
     } else {
@@ -123,8 +126,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(
           hintText: _searchMode == SearchMode.text
-              ? "Search your subconscious..."
-              : "Search tags (e.g., Lucid, Flight)...",
+              ? homeStrings.searchHintText
+              : homeStrings.searchTagsHintText,
           hintStyle: const TextStyle(color: Colors.white38),
           border: InputBorder.none,
           prefixIcon: appBarPrefix,
@@ -237,8 +240,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         _searchMode == SearchMode.tag;
 
                     if (snapshot.hasError) {
-                      return const Center(
-                        child: Text('Error loading memories.'),
+                      return Center(
+                        child: Text(homeStrings.errorLoadingMemories),
                       );
                     }
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -251,7 +254,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
                     final dreams = snapshot.data ?? [];
                     if (dreams.isEmpty && !hasActiveFilters) {
-                      return _buildEmptyState();
+                      return _buildEmptyState(homeStrings);
                     }
 
                     return Column(
@@ -266,10 +269,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         ),
                         Expanded(
                           child: dreams.isEmpty
-                              ? const Center(
-                                  child: Text(
-                                    "No memories match your active filters. 🌫️",
-                                  ),
+                              ? Center(
+                                  child: Text(homeStrings.noFilteredMemories),
                                 )
                               : DreamList(
                                   dreams: dreams,
@@ -319,33 +320,33 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(HomeStrings strings) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(
+          children: [
+            const Icon(
               Icons.nights_stay,
               size: 80,
               color: AppTheme.lightSterlingSilver,
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             Text(
-              'The night leaves its mark.',
+              strings.emptyStateTitle,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 22,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Text(
-              'Every dream finds a safe place here.',
+              strings.emptyStateSubtitle,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 color: AppTheme.lightSterlingSilver,
                 fontWeight: FontWeight.w300,
