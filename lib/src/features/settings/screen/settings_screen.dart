@@ -6,6 +6,7 @@ import 'package:dreamcatcher/src/common/widget/frosted_glass_box.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/data/services/import/import_service.dart';
 import 'package:dreamcatcher/src/features/settings/widgets/export_selection_sheet.dart';
+import 'package:dreamcatcher/src/language/language_service.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -143,6 +144,8 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final languageService = context.watch<LanguageService>();
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
@@ -211,6 +214,30 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
+              _buildSectionHeader('LANGUAGE'),
+              const SizedBox(height: 8),
+              FrostedGlassBox(
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    children: [
+                      _buildLanguageOption(
+                        title: 'English',
+                        code: 'en',
+                        isSelected: languageService.isEnglish,
+                        onTap: () => languageService.setLanguage('en'),
+                      ),
+                      const SizedBox(width: 12),
+                      _buildLanguageOption(
+                        title: 'Deutsch',
+                        code: 'de',
+                        isSelected: languageService.isGerman,
+                        onTap: () => languageService.setLanguage('de'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -271,6 +298,52 @@ class SettingsScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildLanguageOption({
+    required String title,
+    required String code,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? AppTheme.deepPurple.withValues(alpha: 0.7)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected ? AppTheme.burnishedGold : Colors.white12,
+              width: 1,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                isSelected ? Icons.check : Icons.language_outlined,
+                color: isSelected ? AppTheme.burnishedGold : Colors.white54,
+                size: 16,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: TextStyle(
+                  color: isSelected ? AppTheme.burnishedGold : Colors.white,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
