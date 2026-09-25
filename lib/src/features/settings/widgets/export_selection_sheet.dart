@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:dreamcatcher/src/data/services/export/export_service.dart';
+import 'package:dreamcatcher/src/language/language_service.dart';
 import 'package:dreamcatcher/src/data/services/export/formatters/csv_dream_exporter.dart';
 import 'package:dreamcatcher/src/data/services/export/formatters/json_dream_exporter.dart';
 import 'package:dreamcatcher/src/data/services/export/formatters/markdown_dream_exporter.dart';
@@ -29,9 +30,10 @@ class ExportSelectionSheet extends StatelessWidget {
     } catch (e) {
       if (!context.mounted) return;
 
+      final strings = context.read<LanguageService>().exportSelectionStrings;
       final message = e.toString().contains('No dreams')
-          ? 'No memories to export yet. 🌌'
-          : 'Could not export memories. Please try again.';
+          ? strings.errorEmptyDreams
+          : strings.errorExportFailed;
 
       _showErrorSnackBar(context, message);
     }
@@ -55,9 +57,10 @@ class ExportSelectionSheet extends StatelessWidget {
     } catch (e) {
       if (!context.mounted) return;
 
+      final strings = context.read<LanguageService>().exportSelectionStrings;
       final message = e.toString().contains('No dreams')
-          ? 'No memories to export yet. 🌌'
-          : 'Could not export memories. Please try again.';
+          ? strings.errorEmptyDreams
+          : strings.errorExportFailed;
 
       _showErrorSnackBar(context, message);
     }
@@ -81,9 +84,10 @@ class ExportSelectionSheet extends StatelessWidget {
     } catch (e) {
       if (!context.mounted) return;
 
+      final strings = context.read<LanguageService>().exportSelectionStrings;
       final message = e.toString().contains('No dreams')
-          ? 'No memories to export yet. 🌌'
-          : 'Could not export memories. Please try again.';
+          ? strings.errorEmptyDreams
+          : strings.errorExportFailed;
 
       _showErrorSnackBar(context, message);
     }
@@ -107,9 +111,10 @@ class ExportSelectionSheet extends StatelessWidget {
     } catch (e) {
       if (!context.mounted) return;
 
+      final strings = context.read<LanguageService>().exportSelectionStrings;
       final message = e.toString().contains('No dreams')
-          ? 'No memories to export yet. 🌌'
-          : 'Could not export memories. Please try again.';
+          ? strings.errorEmptyDreams
+          : strings.errorExportFailed;
 
       _showErrorSnackBar(context, message);
     }
@@ -147,6 +152,8 @@ class ExportSelectionSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final strings = context.watch<LanguageService>().exportSelectionStrings;
+
     return Container(
       decoration: BoxDecoration(
         color: AppTheme.navyBlue.withValues(alpha: 0.95),
@@ -176,11 +183,11 @@ class ExportSelectionSheet extends StatelessWidget {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 4.0, bottom: 12.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 4.0, bottom: 12.0),
               child: Text(
-                'CHOOSE EXPORT FORMAT',
-                style: TextStyle(
+                strings.sheetTitle,
+                style: const TextStyle(
                   color: AppTheme.lightSterlingSilver,
                   fontSize: 12,
                   letterSpacing: 1.2,
@@ -190,29 +197,29 @@ class ExportSelectionSheet extends StatelessWidget {
             ),
             _buildOptionTile(
               icon: Icons.data_object,
-              title: 'JSON Backup',
-              description: 'Full uncompressed archive for restoration',
+              title: strings.jsonTitle,
+              description: strings.jsonDescription,
               onTap: () => _runJsonExport(context),
             ),
             const SizedBox(height: 10),
             _buildOptionTile(
               icon: Icons.picture_as_pdf_outlined,
-              title: 'PDF Document',
-              description: 'Formatted reading & therapy report',
+              title: strings.pdfTitle,
+              description: strings.pdfDescription,
               onTap: () => _runPdfExport(context),
             ),
             const SizedBox(height: 10),
             _buildOptionTile(
               icon: Icons.text_snippet_outlined,
-              title: 'Markdown Archive',
-              description: 'Compatible with Obsidian, Logseq & Bear',
+              title: strings.markdownTitle,
+              description: strings.markdownDescription,
               onTap: () => _runMarkdownExport(context),
             ),
             const SizedBox(height: 10),
             _buildOptionTile(
               icon: Icons.table_chart_outlined,
-              title: 'CSV Sheet',
-              description: 'For spreadsheets and metric analysis',
+              title: strings.csvTitle,
+              description: strings.csvDescription,
               onTap: () => _runCsvExport(context),
             ),
             const SizedBox(height: 8),

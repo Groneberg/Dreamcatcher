@@ -20,6 +20,7 @@ class SettingsScreen extends StatelessWidget {
   Future<void> _handleImport(BuildContext context) async {
     final rootContext = context;
     final importService = rootContext.read<ImportService>();
+    final strings = rootContext.read<LanguageService>().settingsStrings;
 
     final dialogResult = await showDialog<String>(
       context: rootContext,
@@ -32,34 +33,34 @@ class SettingsScreen extends StatelessWidget {
             color: AppTheme.lavender.withValues(alpha: 0.2),
           ),
         ),
-        title: const Text(
-          'Restore Backup?',
-          style: TextStyle(color: Colors.white),
+        title: Text(
+          strings.restoreDialogTitle,
+          style: const TextStyle(color: Colors.white),
         ),
-        content: const Text(
-          'This will permanently replace your current journal with the backup data. We recommend exporting your current state first.',
-          style: TextStyle(color: AppTheme.lightSterlingSilver),
+        content: Text(
+          strings.restoreDialogContent,
+          style: const TextStyle(color: AppTheme.lightSterlingSilver),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, 'cancel'),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: AppTheme.lightSterlingSilver),
+            child: Text(
+              strings.restoreDialogCancel,
+              style: const TextStyle(color: AppTheme.lightSterlingSilver),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, 'export'),
-            child: const Text(
-              'Export First',
-              style: TextStyle(color: AppTheme.burnishedGold),
+            child: Text(
+              strings.restoreDialogExportFirst,
+              style: const TextStyle(color: AppTheme.burnishedGold),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, 'overwrite'),
-            child: const Text(
-              'Overwrite',
-              style: TextStyle(color: Colors.redAccent),
+            child: Text(
+              strings.restoreDialogOverwrite,
+              style: const TextStyle(color: Colors.redAccent),
             ),
           ),
         ],
@@ -103,7 +104,7 @@ class SettingsScreen extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Restored ${result.importedCount} memories successfully! 🌟',
+                  strings.importSuccess(result.importedCount),
                   style: const TextStyle(color: Colors.white),
                 ),
               ),
@@ -145,14 +146,15 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final languageService = context.watch<LanguageService>();
+    final strings = languageService.settingsStrings;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text(
-          'Settings',
-          style: TextStyle(
+        title: Text(
+          strings.settingsTitle,
+          style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w400,
             fontSize: 18,
@@ -175,7 +177,7 @@ class SettingsScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
             children: [
-              _buildSectionHeader('DATA MANAGEMENT'),
+              _buildSectionHeader(strings.sectionDataManagement),
               const SizedBox(height: 8),
               FrostedGlassBox(
                 child: Padding(
@@ -185,7 +187,7 @@ class SettingsScreen extends StatelessWidget {
                       Expanded(
                         child: _buildActionTile(
                           icon: Icons.upload_file_outlined,
-                          label: 'Export',
+                          label: strings.actionExport,
                           onTap: () {
                             showModalBottomSheet(
                               context: context,
@@ -205,7 +207,7 @@ class SettingsScreen extends StatelessWidget {
                       Expanded(
                         child: _buildActionTile(
                           icon: Icons.download_for_offline_outlined,
-                          label: 'Import',
+                          label: strings.actionImport,
                           onTap: () => _handleImport(context),
                         ),
                       ),
@@ -214,7 +216,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              _buildSectionHeader('LANGUAGE'),
+              _buildSectionHeader(strings.sectionLanguage),
               const SizedBox(height: 8),
               FrostedGlassBox(
                 child: Padding(
