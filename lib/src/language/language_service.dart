@@ -4,6 +4,7 @@ import 'package:dreamcatcher/src/language/strings/home_strings.dart';
 import 'package:dreamcatcher/src/language/strings/quick_add_strings.dart';
 import 'package:dreamcatcher/src/language/strings/settings_strings.dart';
 import 'package:dreamcatcher/src/language/strings/export_selection_strings.dart';
+import 'package:dreamcatcher/src/language/strings/edit_dream_strings.dart';
 import 'package:dreamcatcher/src/language/strings/en/home_strings_en.dart';
 import 'package:dreamcatcher/src/language/strings/de/home_strings_de.dart';
 import 'package:dreamcatcher/src/language/strings/en/quick_add_strings_en.dart';
@@ -12,6 +13,8 @@ import 'package:dreamcatcher/src/language/strings/en/settings_strings_en.dart';
 import 'package:dreamcatcher/src/language/strings/de/settings_strings_de.dart';
 import 'package:dreamcatcher/src/language/strings/en/export_selection_strings_en.dart';
 import 'package:dreamcatcher/src/language/strings/de/export_selection_strings_de.dart';
+import 'package:dreamcatcher/src/language/strings/en/edit_dream_strings_en.dart';
+import 'package:dreamcatcher/src/language/strings/de/edit_dream_strings_de.dart';
 
 class LanguageService extends ChangeNotifier {
   final PreferencesService _prefsService;
@@ -62,6 +65,16 @@ class LanguageService extends ChangeNotifier {
       case 'en':
       default:
         return ExportSelectionStringsEn();
+    }
+  }
+
+  EditDreamStrings get editDreamStrings {
+    switch (_currentLanguageCode) {
+      case 'de':
+        return EditDreamStringsDe();
+      case 'en':
+      default:
+        return EditDreamStringsEn();
     }
   }
 
