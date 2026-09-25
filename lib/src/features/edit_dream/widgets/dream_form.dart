@@ -1,7 +1,9 @@
 import 'package:dreamcatcher/src/common/widget/dream_button.dart';
 import 'package:dreamcatcher/src/data/model/dream.dart';
+import 'package:dreamcatcher/src/language/language_service.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DreamForm extends StatefulWidget {
   final Dream? initialDream;
@@ -129,6 +131,8 @@ class _DreamFormState extends State<DreamForm> {
 
   @override
   Widget build(BuildContext context) {
+    final strings = context.watch<LanguageService>().editDreamStrings;
+
     return Form(
       key: _formKey,
       child: Column(
@@ -137,27 +141,27 @@ class _DreamFormState extends State<DreamForm> {
           TextFormField(
             controller: _titleController,
             style: const TextStyle(color: Colors.white),
-            decoration: const InputDecoration(
-              labelText: 'Title (optional)',
-              labelStyle: TextStyle(color: AppTheme.lightSterlingSilver),
-              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+            decoration: InputDecoration(
+              labelText: strings.fieldTitleLabel,
+              labelStyle: const TextStyle(color: AppTheme.lightSterlingSilver),
+              enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
             ),
           ),
           const SizedBox(height: 16),
           TextFormField(
             controller: _contentController,
             style: const TextStyle(color: Colors.white),
-            decoration: const InputDecoration(
-              labelText: 'What did you experience?',
-              labelStyle: TextStyle(color: AppTheme.lightSterlingSilver),
+            decoration: InputDecoration(
+              labelText: strings.fieldContentLabel,
+              labelStyle: const TextStyle(color: AppTheme.lightSterlingSilver),
               alignLabelWithHint: true,
-              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+              enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
             ),
             maxLines: 5,
-            validator: (value) => (value == null || value.isEmpty) ? 'Please describe your dream.' : null,
+            validator: (value) => (value == null || value.isEmpty) ? strings.fieldContentError : null,
           ),
           const SizedBox(height: 24),
-          
+
           InkWell(
             onTap: pickDate,
             child: Container(
@@ -171,7 +175,7 @@ class _DreamFormState extends State<DreamForm> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text("Date", style: TextStyle(color: AppTheme.lightSterlingSilver, fontSize: 12)),
+                      Text(strings.labelDate, style: const TextStyle(color: AppTheme.lightSterlingSilver, fontSize: 12)),
                       Text(
                         "${_selectedDate.day}.${_selectedDate.month}.${_selectedDate.year}",
                         style: const TextStyle(color: Colors.white, fontSize: 16),
@@ -183,12 +187,12 @@ class _DreamFormState extends State<DreamForm> {
               ),
             ),
           ),
-          
+
           const SizedBox(height: 24),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Clarity: ${_clarityScore.round()} / 5", style: const TextStyle(color: AppTheme.lightSterlingSilver)),
+              Text(strings.labelClarity(_clarityScore.round()), style: const TextStyle(color: AppTheme.lightSterlingSilver)),
               Slider(
                 value: _clarityScore,
                 activeColor: AppTheme.burnishedGold,
@@ -204,17 +208,17 @@ class _DreamFormState extends State<DreamForm> {
           TextFormField(
             controller: _tagsController,
             style: const TextStyle(color: Colors.white),
-            decoration: const InputDecoration(
-              labelText: 'Tags (separate with commas)',
-              labelStyle: TextStyle(color: AppTheme.lightSterlingSilver),
-              prefixIcon: Icon(Icons.tag, color: AppTheme.lightSterlingSilver),
-              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
+            decoration: InputDecoration(
+              labelText: strings.fieldTagsLabel,
+              labelStyle: const TextStyle(color: AppTheme.lightSterlingSilver),
+              prefixIcon: const Icon(Icons.tag, color: AppTheme.lightSterlingSilver),
+              enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white24)),
             ),
           ),
           const SizedBox(height: 32),
-          
+
           DreamButton(
-            label: widget.initialDream == null ? 'Save Dream' : 'Save Edit',
+            label: widget.initialDream == null ? strings.buttonSaveNew : strings.buttonSaveEdit,
             onPressed: submit,
           ),
         ],

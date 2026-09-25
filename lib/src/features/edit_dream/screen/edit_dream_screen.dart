@@ -3,6 +3,7 @@ import 'package:dreamcatcher/src/common/widget/frosted_glass_box.dart';
 import 'package:dreamcatcher/src/data/model/dream.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/features/edit_dream/widgets/dream_form.dart';
+import 'package:dreamcatcher/src/language/language_service.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,7 @@ class EditDreamScreen extends StatelessWidget {
     required List<String> tags,
   }) async {
     final dbService = Provider.of<DatabaseService>(context, listen: false);
+    final strings = context.read<LanguageService>().editDreamStrings;
 
     final dream = Dream(
       id: dreamToEdit?.id ?? 0,
@@ -36,8 +38,8 @@ class EditDreamScreen extends StatelessWidget {
     if (context.mounted) {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Changes saved in the ether... 🌙'),
+        SnackBar(
+          content: Text(strings.snackBarSaved),
           backgroundColor: AppTheme.navyBlue,
         ),
       );
@@ -47,11 +49,12 @@ class EditDreamScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isEditing = dreamToEdit != null;
+    final strings = context.watch<LanguageService>().editDreamStrings;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(isEditing ? 'Edit Dream' : 'New Entry'),
+        title: Text(isEditing ? strings.appBarEdit : strings.appBarNew),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
