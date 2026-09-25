@@ -4,6 +4,7 @@ import 'package:dreamcatcher/src/data/model/dream.dart';
 import 'package:dreamcatcher/src/data/services/database_service.dart';
 import 'package:dreamcatcher/src/features/dream_details/widgets/dream_detail_content.dart';
 import 'package:dreamcatcher/src/features/edit_dream/screen/edit_dream_screen.dart';
+import 'package:dreamcatcher/src/language/language_service.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -74,28 +75,27 @@ class DreamDetailScreen extends StatelessWidget {
 
   void _confirmDelete(BuildContext context) {
     final dbService = Provider.of<DatabaseService>(context, listen: false);
+    final strings = context.read<LanguageService>().dreamDetailStrings;
 
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
         backgroundColor: AppTheme.navyBlue,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text(
-          "Delete Dream?",
-          style: TextStyle(color: Colors.white),
+        title: Text(
+          strings.deleteDialogTitle,
+          style: const TextStyle(color: Colors.white),
         ),
-        content: const Text(
-          "Do you really want this memory to fade away forever?",
-        ),
+        content: Text(strings.deleteDialogContent),
         actions: [
           DreamButton(
-            label: "Keep",
+            label: strings.deleteDialogKeep,
             isPrimary: false,
             onPressed: () => Navigator.pop(dialogContext),
           ),
           const SizedBox(height: 8),
           DreamButton(
-            label: "Delete",
+            label: strings.deleteDialogDelete,
             onPressed: () async {
               await dbService.deleteDream(dream.id);
               if (context.mounted) {

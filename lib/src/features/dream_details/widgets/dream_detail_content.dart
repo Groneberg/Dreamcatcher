@@ -1,12 +1,14 @@
 import 'package:dreamcatcher/src/common/widget/frosted_glass_box.dart';
+import 'package:dreamcatcher/src/data/model/dream.dart';
+import 'package:dreamcatcher/src/language/language_service.dart';
 import 'package:dreamcatcher/src/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:dreamcatcher/src/data/model/dream.dart';
+import 'package:provider/provider.dart';
 
 class DreamDetailContent extends StatelessWidget {
   final Dream dream;
 
-  const DreamDetailContent({Key? key, required this.dream}) : super(key: key);
+  const DreamDetailContent({super.key, required this.dream});
 
   String _formattedDate(DateTime d) {
     return '${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.${d.year}';
@@ -27,6 +29,8 @@ class DreamDetailContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final strings = context.watch<LanguageService>().dreamDetailStrings;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: FrostedGlassBox(
@@ -44,7 +48,7 @@ class DreamDetailContent extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                dream.title ?? "Untitled Dream",
+                dream.title ?? strings.untitledDreamTitle,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 28,
