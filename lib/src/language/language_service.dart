@@ -2,10 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:dreamcatcher/src/data/services/preferences_service.dart';
 import 'package:dreamcatcher/src/language/strings/home_strings.dart';
 import 'package:dreamcatcher/src/language/strings/quick_add_strings.dart';
+import 'package:dreamcatcher/src/language/strings/settings_strings.dart';
+import 'package:dreamcatcher/src/language/strings/export_selection_strings.dart';
 import 'package:dreamcatcher/src/language/strings/en/home_strings_en.dart';
 import 'package:dreamcatcher/src/language/strings/de/home_strings_de.dart';
 import 'package:dreamcatcher/src/language/strings/en/quick_add_strings_en.dart';
 import 'package:dreamcatcher/src/language/strings/de/quick_add_strings_de.dart';
+import 'package:dreamcatcher/src/language/strings/en/settings_strings_en.dart';
+import 'package:dreamcatcher/src/language/strings/de/settings_strings_de.dart';
+import 'package:dreamcatcher/src/language/strings/en/export_selection_strings_en.dart';
+import 'package:dreamcatcher/src/language/strings/de/export_selection_strings_de.dart';
 
 class LanguageService extends ChangeNotifier {
   final PreferencesService _prefsService;
@@ -36,6 +42,26 @@ class LanguageService extends ChangeNotifier {
       case 'en':
       default:
         return QuickAddStringsEn();
+    }
+  }
+
+  SettingsStrings get settingsStrings {
+    switch (_currentLanguageCode) {
+      case 'de':
+        return SettingsStringsDe();
+      case 'en':
+      default:
+        return SettingsStringsEn();
+    }
+  }
+
+  ExportSelectionStrings get exportSelectionStrings {
+    switch (_currentLanguageCode) {
+      case 'de':
+        return ExportSelectionStringsDe();
+      case 'en':
+      default:
+        return ExportSelectionStringsEn();
     }
   }
 
