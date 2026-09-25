@@ -15,8 +15,10 @@ class SearchFilterPanel extends StatelessWidget {
   });
 
   Future<void> _selectCustomRange(BuildContext context) async {
+    final languageCode = context.read<LanguageService>().currentLanguageCode;
     final DateTimeRange? picked = await showDateRangePicker(
       context: context,
+      locale: Locale(languageCode),
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
       initialDateRange: selectedRange,

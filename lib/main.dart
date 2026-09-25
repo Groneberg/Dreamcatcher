@@ -4,6 +4,7 @@ import 'package:dreamcatcher/src/data/services/import/import_service.dart';
 import 'package:dreamcatcher/src/features/home/screen/home_screen.dart';
 import 'package:dreamcatcher/src/language/language_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'src/theme/app_theme.dart';
 
@@ -50,14 +51,30 @@ class MyApp extends StatelessWidget {
               create: (_) => ImportService(stateManager.dbService),
             ),
           ],
-          child: MaterialApp(
-            title: 'DreamCatcher',
-            debugShowCheckedModeBanner: false,
-            theme: AppTheme.darkTheme,
-            home: HomeScreen(
-              isFirstLaunch: stateManager.isFirstLaunchAtStart,
-              showQuickAddOnStart: stateManager.shouldShowQuickAddAsRoot,
-            ),
+          child: Builder(
+            builder: (context) {
+              final currentLanguageCode = context.watch<LanguageService>().currentLanguageCode;
+
+              return MaterialApp(
+                title: 'DreamCatcher',
+                debugShowCheckedModeBanner: false,
+                theme: AppTheme.darkTheme,
+                locale: Locale(currentLanguageCode),
+                supportedLocales: const [
+                  Locale('en'),
+                  Locale('de'),
+                ],
+                localizationsDelegates: const [
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                home: HomeScreen(
+                  isFirstLaunch: stateManager.isFirstLaunchAtStart,
+                  showQuickAddOnStart: stateManager.shouldShowQuickAddAsRoot,
+                ),
+              );
+            },
           ),
         );
       },

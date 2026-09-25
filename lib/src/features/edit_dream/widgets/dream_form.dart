@@ -55,8 +55,10 @@ class _DreamFormState extends State<DreamForm> {
   }
 
   Future<void> pickDate() async {
+    final languageCode = context.read<LanguageService>().currentLanguageCode;
     final DateTime? picked = await showDatePicker(
       context: context,
+      locale: Locale(languageCode),
       initialDate: _selectedDate,
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
