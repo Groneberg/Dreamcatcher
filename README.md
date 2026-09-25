@@ -119,7 +119,7 @@ ObjectBox requires native compilation support. Ensure your deployment targets ma
 #### Phase 2: Data Sovereignty & Localization (Current Focus)
 * [x] **Device Migration & Backup Restore (1-Click):** Clean state restoration with ID preservation from JSON archives, secured by a safety-first confirmation dialog.
 * [x] **Multi-Format Export Suite (JSON, PDF, Markdown, CSV):** Modular strategy-based export pipeline utilizing native OS share sheets and iPadOS popover handling.
-* [ ] **Multi-Language Support (Localization / i18n):** Decoupled language architecture with type-safe string provisioning for multilingual UI support (English & German).
+* [x] **Multi-Language Support (Localization / i18n):** Decoupled language architecture with type-safe string provisioning for multilingual UI support (English & German).
 
 #### Phase 3: Trust, Security & Advanced Workflows
 * [ ] **Refined PDF Export Styling:** Visual overhaul and customized Midnight/print styling for therapy and clinical reports.
@@ -250,7 +250,7 @@ Da ObjectBox native C-Bibliotheken nutzt, überprüfe bitte folgende Parameter:
 #### Phase 2: Datensouveränität & Lokalisierung (Aktueller Fokus)
 * [x] **Geräteumzug & Backup-Restore (1-Klick):** Vollständige Wiederherstellung des Archivzustands inklusive historischer IDs aus JSON-Backups, abgesichert durch dreistufigen Warndialog.
 * [x] **Multi-Format Export-Suite (JSON, PDF, Markdown, CSV):** Modulare Export-Pipeline über das native System-Share-Sheet inklusive iPadOS-Popover-Absicherung.
-* [ ] **Mehrsprachigkeit (Lokalisierung / i18n):** Entkoppelte Sprach-Architektur mit typsicherer String-Bereitstellung für mehrsprachige Menüs und Ansichten (Deutsch & Englisch).
+* [x] **Mehrsprachigkeit (Lokalisierung / i18n):** Entkoppelte Sprach-Architektur mit typsicherer String-Bereitstellung für mehrsprachige Menüs und Ansichten (Deutsch & Englisch).
 
 #### Phase 3: Vertrauen, Sicherheit & Erweiterte Workflows
 * [ ] **Überarbeitetes PDF-Export-Design:** Visuelle Veredelung und optimiertes Print-/Midnight-Layout für Therapie- und Klinikberichte.
