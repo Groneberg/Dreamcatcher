@@ -27,6 +27,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_native_splash: ^2.4.4
   mocktail: ^0.3.0
   objectbox_generator: ^4.0.0
   build_runner: any
@@ -37,6 +38,7 @@ flutter:
   
   assets:
     - assets/images/background/background.jpg
+    - assets/images/splash_logo.png
 
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -45,3 +47,11 @@ flutter_launcher_icons:
   image_path: "assets/images/app_icon_simplified.png"
   adaptive_icon_background: "#0A1128"
   adaptive_icon_foreground: "assets/images/app_icon_foreground_transparent.png"
+
+flutter_native_splash:
+  color: "#010B24"
+  image: "assets/images/splash_logo.png"
+
+  android_12:
+    image: "assets/images/splash_logo.png"
+    icon_background_color: "#010B24"
