@@ -147,6 +147,12 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final languageService = context.watch<LanguageService>();
     final strings = languageService.settingsStrings;
+    final availableLanguages = const [
+      {'code': 'en', 'title': 'English'},
+      {'code': 'de', 'title': 'Deutsch'},
+      {'code': 'es', 'title': 'Español'},
+      {'code': 'fr', 'title': 'Français'},
+    ];
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -221,22 +227,24 @@ class SettingsScreen extends StatelessWidget {
               FrostedGlassBox(
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Row(
-                    children: [
-                      _buildLanguageOption(
-                        title: 'English',
-                        code: 'en',
-                        isSelected: languageService.isEnglish,
-                        onTap: () => languageService.setLanguage('en'),
-                      ),
-                      const SizedBox(width: 12),
-                      _buildLanguageOption(
-                        title: 'Deutsch',
-                        code: 'de',
-                        isSelected: languageService.isGerman,
-                        onTap: () => languageService.setLanguage('de'),
-                      ),
-                    ],
+                  child: GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 2.8,
+                    children: availableLanguages.map((lang) {
+                      final code = lang['code']!;
+                      final isSelected =
+                          languageService.currentLanguageCode == code;
+                      return _buildLanguageOption(
+                        title: lang['title']!,
+                        code: code,
+                        isSelected: isSelected,
+                        onTap: () => languageService.setLanguage(code),
+                      );
+                    }).toList(),
                   ),
                 ),
               ),
@@ -309,41 +317,39 @@ class SettingsScreen extends StatelessWidget {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? AppTheme.deepPurple.withValues(alpha: 0.7)
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isSelected ? AppTheme.burnishedGold : Colors.white12,
-              width: 1,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 12.0),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppTheme.deepPurple.withValues(alpha: 0.7)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? AppTheme.burnishedGold : Colors.white12,
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              isSelected ? Icons.check : Icons.language_outlined,
+              color: isSelected ? AppTheme.burnishedGold : Colors.white54,
+              size: 16,
             ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                isSelected ? Icons.check : Icons.language_outlined,
-                color: isSelected ? AppTheme.burnishedGold : Colors.white54,
-                size: 16,
+            const SizedBox(width: 8),
+            Text(
+              title,
+              style: TextStyle(
+                color: isSelected ? AppTheme.burnishedGold : Colors.white,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                fontSize: 14,
               ),
-              const SizedBox(width: 8),
-              Text(
-                title,
-                style: TextStyle(
-                  color: isSelected ? AppTheme.burnishedGold : Colors.white,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                  fontSize: 14,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -53,7 +53,9 @@ class MyApp extends StatelessWidget {
           ],
           child: Builder(
             builder: (context) {
-              final currentLanguageCode = context.watch<LanguageService>().currentLanguageCode;
+              final currentLanguageCode = context
+                  .watch<LanguageService>()
+                  .currentLanguageCode;
 
               return MaterialApp(
                 title: 'DreamCatcher',
@@ -63,6 +65,8 @@ class MyApp extends StatelessWidget {
                 supportedLocales: const [
                   Locale('en'),
                   Locale('de'),
+                  Locale('es'),
+                  Locale('fr'),
                 ],
                 localizationsDelegates: const [
                   GlobalMaterialLocalizations.delegate,
